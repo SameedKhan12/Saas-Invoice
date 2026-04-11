@@ -14,10 +14,7 @@ export async function GET() {
   const pendingRevenue = allInvoices
     .filter((i) => i.status !== "paid")
     .reduce((sum, i) => sum + i.amount, 0);
-console.log("Total Clients:", allClients.length);
-console.log("Total Invoices:", allInvoices.length);
-console.log("Total Revenue:", totalRevenue);
-console.log("Pending Revenue:", pendingRevenue);
+
   return NextResponse.json({
     totalClients: allClients.length,
     totalInvoices: allInvoices.length,

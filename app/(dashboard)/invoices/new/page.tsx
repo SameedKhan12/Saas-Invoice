@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState, FormEvent } from "react";
 import { invoiceSchema } from "@/lib/utils";
+import { auth } from "@/lib/auth";
+import { useSession } from "next-auth/react";
 
 export default function InvoicesPage() {
   const [clients, setClients] = useState([]);
@@ -45,8 +47,8 @@ export default function InvoicesPage() {
   }
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    const userJson = JSON.parse(localStorage.getItem("user") || "null");
-    const userId = userJson?.id;
+    // const session = await auth()
+
     const formData = new FormData(e.target as HTMLFormElement);
     const clientId = formData.get("clientId") as string;
     const amount = formData.get("amount") as string;
@@ -65,7 +67,6 @@ export default function InvoicesPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId,
           clientId,
           amount: parseFloat(amount),
         }),

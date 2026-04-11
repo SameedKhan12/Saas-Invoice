@@ -17,9 +17,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense, useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Edit2Icon, Search, SearchIcon, Trash } from "lucide-react";
+
 import { clientSchema } from "@/lib/utils";
 import {
   Table,
@@ -36,8 +36,11 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import ClientsLoading from "./ClientsLoading";
+import { auth } from "@/lib/auth";
+import getSessionCall from "@/lib/utils/getSessionCall";
 
-export default function CLientsPage() {
+export default  function CLientsPage() {
+  // const { data: session } = useSession();
   const [fetching, setFetching] = useState(false);
   const [clients, setClients] = useState<any[]>([]);
   const [form, setForm] = useState({
@@ -48,6 +51,7 @@ export default function CLientsPage() {
   const [errors, setErrors] = useState<any>({});
   const [editingId, setEditingId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
+  const [userId, setUserId] = useState<String>()
 
   async function fetchClients() {
     try {
@@ -66,8 +70,6 @@ export default function CLientsPage() {
   }
 
   async function addClient(e: React.FormEvent) {
-    const userJson = localStorage.getItem("user");
-    const user = userJson ? JSON.parse(userJson) : null;
     e.preventDefault();
     const result = clientSchema.safeParse(form);
     if (!result.success) {
@@ -107,9 +109,10 @@ export default function CLientsPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId: user?.id, ...form }),
+          body: JSON.stringify({ userId: userId, ...form }),
         });
         const newClient = await response.json();
+        console.log(newClient)
         setClients([...clients, newClient]);
         setForm({ name: "", email: "" });
       } catch (error) {
@@ -139,7 +142,13 @@ export default function CLientsPage() {
   }
 
   useEffect(() => {
+    async function getSessionData(){
+      const id  = await getSessionCall();
+      console.log(id)
+      setUserId(id)
+    }
     fetchClients();
+    getSessionData();
   }, []);
 
   const filteredClients = clients.filter(
@@ -289,3 +298,5 @@ export default function CLientsPage() {
     </div>
   );
 }
+
+

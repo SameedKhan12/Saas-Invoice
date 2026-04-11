@@ -1,30 +1,16 @@
+import { redirect } from "next/navigation";
 
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-import {
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { SessionProvider } from "next-auth/react";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-
-    if (!user) {
-      router.push("/login");
-    }
-  }, []);
 
   return (
     <SidebarProvider>
@@ -35,8 +21,9 @@ export default function DashboardLayout({
           <SidebarTrigger />
           <h1 className="font-semibold">Dashboard</h1>
         </div>
-
-        <div className="p-6">{children}</div>
+        <SessionProvider>
+          <div className="p-6">{children}</div>
+        </SessionProvider>
       </main>
     </SidebarProvider>
   );

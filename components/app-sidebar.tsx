@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
 import { LayoutDashboard, Users, FileText, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -79,8 +80,7 @@ export function AppSidebar() {
         <SidebarMenuButton
           className=" text-red-600  hover:text-red-700 transition-colors "
           onClick={() => {
-            localStorage.removeItem("user");
-            window.location.href = "/login";
+            signOut({ callbackUrl: "/login" });
           }}
         >
           <LogOut className="w-4 h-4" />

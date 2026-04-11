@@ -2,10 +2,16 @@ import db from "@/db";
 import { clients } from "@/db/schema";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 // Get all clients
 export async function GET() {
   try {
-    const allClients = await db.select().from(clients).where(eq(clients.userId, 'c839abdb-f472-4416-a7b9-d82565b9d9d4'));
+    const session = await auth();
+    if(!session?.user){
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const id= session.user.id;
+    const allClients = await db.select().from(clients).where(eq(clients.userId, id));
     return NextResponse.json(allClients);
   } catch (error) {
     console.error("Error fetching clients:", error);
