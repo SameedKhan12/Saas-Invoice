@@ -11,8 +11,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { markAsPaid } from "@/lib/api-calls/markAsPaid";
-import { getBadgeColor } from "@/lib/utils/utilityFunctions"; 
+import { getBadgeColor } from "@/lib/utils/utilityFunctions";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -55,7 +56,7 @@ export default function InvoicesPage() {
             <TableHead>Client</TableHead>
             <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-right">Amount</TableHead>
-            <TableHead >Action</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         {invoices.length === 0 && !fetching ? (
@@ -68,15 +69,26 @@ export default function InvoicesPage() {
                 <TableCell>{invoice.clientId}</TableCell>
                 <TableCell align="center">
                   {
-                  <Badge className={getBadgeColor(invoice.status)}>{invoice.status}</Badge>
+                    <Badge className={getBadgeColor(invoice.status)}>
+                      {invoice.status}
+                    </Badge>
                   }
                 </TableCell>
                 <TableCell align="right">${invoice.amount}</TableCell>
-                <TableCell>
-                  <Button onClick={async () => {
-                    await markAsPaid(invoice.id);
-                    fetchInvoices();
-                  }}>Mark as Paid</Button>
+                <TableCell align="center">
+                  <Button
+                    onClick={async () => {
+                      await markAsPaid(invoice.id);
+                      fetchInvoices();
+                    }}
+                  >
+                    Mark as Paid
+                  </Button>
+                  <Button>
+                    <Link href={`/api/invoices/${invoice.id}/pdf`} download>
+                      Download PDF
+                    </Link>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
