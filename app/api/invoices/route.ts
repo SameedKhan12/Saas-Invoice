@@ -11,11 +11,14 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const id = session.user.id;
+    if(!id){
+      return NextResponse.json({message:'Unauthorized'},{status:401})
+    }
     const data = await db
       .select({
         id: invoices.id,
         clientId: clients.name,
-        amount: invoices.amount,
+        amount_cents: invoices.amount_cents,
         status: invoices.status,
       })
       .from(invoices)
@@ -27,7 +30,7 @@ export async function GET() {
     );
   } catch (error) {
     return NextResponse.json(
-      { success: false, error: "Failed to fetch invoices" },
+      { success: false, message: "Failed to fetch invoices", error:error },
       { status: 500 },
     );
   }
@@ -46,7 +49,7 @@ export async function POST(req: Request) {
       .values({
         userId: id,
         clientId: body.clientId,
-        amount: body.amount,
+        amount_cents: body.amount * 100,
         status: body.status || "draft",
       })
       .returning();

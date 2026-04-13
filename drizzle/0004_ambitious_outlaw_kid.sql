@@ -1,0 +1,1 @@
+ALTER TABLE "invoices" RENAME COLUMN "amount" TO "amount_cents";

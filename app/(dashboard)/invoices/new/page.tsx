@@ -20,12 +20,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState, FormEvent } from "react";
 import { invoiceSchema } from "@/lib/utils";
-import { auth } from "@/lib/auth";
-import { useSession } from "next-auth/react";
+import { toCents } from "@/lib/utils/amountConverter";
+type InvoiceFormError = {
+  clientId?: string[];
+    amount?: string[];
+}
 
 export default function InvoicesPage() {
   const [clients, setClients] = useState([]);
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<InvoiceFormError>({});
 
   async function fetchClients() {
     try {
@@ -52,6 +55,7 @@ export default function InvoicesPage() {
     const formData = new FormData(e.target as HTMLFormElement);
     const clientId = formData.get("clientId") as string;
     const amount = formData.get("amount") as string;
+    const amountInCents = toCents(parseFloat(amount));
     const validationResilt = invoiceSchema.safeParse(
       Object.fromEntries(formData),
     );
@@ -68,7 +72,7 @@ export default function InvoicesPage() {
         },
         body: JSON.stringify({
           clientId,
-          amount: parseFloat(amount),
+          amount: amountInCents,
         }),
       });
       const data = await res.json();

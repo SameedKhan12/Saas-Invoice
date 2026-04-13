@@ -1,3 +1,4 @@
+import { InferSelectModel } from "drizzle-orm";
 import { pgTable, uuid, text, timestamp, integer, pgEnum } from "drizzle-orm/pg-core";
 import z from "zod";
 import { id } from "zod/locales";
@@ -22,7 +23,9 @@ export const invoices = pgTable("invoices", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("user_id").notNull(),
   clientId: uuid("client_id").notNull(),
-  amount: integer("amount").notNull(),
+  amount_cents: integer("amount_cents").notNull(),
   status: invoicesStatusEnum("status").notNull().default("draft"),
   createdAt: timestamp("created_at").defaultNow(),
 })
+
+export type Invoice = InferSelectModel<typeof invoices>

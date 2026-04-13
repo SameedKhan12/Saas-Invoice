@@ -1,6 +1,7 @@
+import { Invoice } from "@/db/schema";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
-export async function generateInvoicePDF(invoice: any, clientName: string) {
+export async function generateInvoicePDF(invoice: Invoice, clientName: string) {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([600, 400]);
 
@@ -23,7 +24,7 @@ export async function generateInvoicePDF(invoice: any, clientName: string) {
     font,
   });
 
-  page.drawText(`Amount: $${invoice.amount}`, {
+  page.drawText(`Amount: $${(invoice.amount_cents/10000).toFixed(2)}`, {
     x: 50,
     y: height - 130,
     size: 12,

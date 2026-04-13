@@ -16,11 +16,11 @@ export async function GET() {
 
     const totalRevenue = !allInvoices?0:allInvoices
       .filter((i) => i.status === "paid")
-      .reduce((sum, i) => sum + i.amount, 0);
+      .reduce((sum, i) => sum + i.amount_cents/10000, 0);
 
     const pendingRevenue = !allInvoices?0:allInvoices
       .filter((i) => i.status !== "paid")
-      .reduce((sum, i) => sum + i.amount, 0);
+      .reduce((sum, i) => sum + i.amount_cents/10000, 0);
 
     return NextResponse.json(
       {

@@ -36,11 +36,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import ClientsLoading from "./ClientsLoading";
-import { auth } from "@/lib/auth";
-import getSessionCall from "@/lib/utils/getSessionCall";
 
-export default  function CLientsPage() {
-  // const { data: session } = useSession();
+export default function CLientsPage() {
   const [fetching, setFetching] = useState(false);
   const [clients, setClients] = useState<any[]>([]);
   const [form, setForm] = useState({
@@ -51,7 +48,6 @@ export default  function CLientsPage() {
   const [errors, setErrors] = useState<any>({});
   const [editingId, setEditingId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
-  const [userId, setUserId] = useState<String>()
 
   async function fetchClients() {
     try {
@@ -109,10 +105,10 @@ export default  function CLientsPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId: userId, ...form }),
+          body: JSON.stringify(form),
         });
         const newClient = await response.json();
-        console.log(newClient)
+        console.log(newClient);
         setClients([...clients, newClient]);
         setForm({ name: "", email: "" });
       } catch (error) {
@@ -122,6 +118,10 @@ export default  function CLientsPage() {
     setForm({ name: "", email: "" });
     fetchClients();
   }
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
 
   function deleteClient(id: string) {
     startTransition(async () => {
@@ -140,16 +140,6 @@ export default  function CLientsPage() {
       }
     });
   }
-
-  useEffect(() => {
-    async function getSessionData(){
-      const id  = await getSessionCall();
-      console.log(id)
-      setUserId(id)
-    }
-    fetchClients();
-    getSessionData();
-  }, []);
 
   const filteredClients = clients.filter(
     (clients) =>

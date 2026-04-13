@@ -10,16 +10,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Invoice } from "@/db/schema";
 import { markAsPaid } from "@/lib/api-calls/markAsPaid";
+import { formatCurrency } from "@/lib/utils/amountConverter";
 import { getBadgeColor } from "@/lib/utils/utilityFunctions";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Send, CheckCheck, Download } from "lucide-react";
 
 export default function InvoicesPage() {
-  const [invoices, setInvoices] = useState<any[]>([]);
-  const [fetching, setFetching] = useState(false);
+  const [invoices, setInvoices] = useState<Invoice[]>();
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   async function fetchInvoices() {
     setFetching(true);
@@ -59,11 +63,11 @@ export default function InvoicesPage() {
             <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
-        {invoices.length === 0 && !fetching ? (
+        {invoices?.length === 0 && !fetching ? (
           <TableCaption>No invoices found.</TableCaption>
         ) : (
           <TableBody>
-            {invoices.map((invoice) => (
+            {invoices?.map((invoice) => (
               <TableRow key={invoice.id}>
                 <TableCell>{invoice.id}</TableCell>
                 <TableCell>{invoice.clientId}</TableCell>
@@ -74,20 +78,45 @@ export default function InvoicesPage() {
                     </Badge>
                   }
                 </TableCell>
-                <TableCell align="right">${invoice.amount}</TableCell>
+                <TableCell align="right">
+                  ${formatCurrency(invoice.amount_cents)}
+                </TableCell>
                 <TableCell align="center">
                   <Button
+                    disabled={fetching || loading}
                     onClick={async () => {
                       await markAsPaid(invoice.id);
                       fetchInvoices();
                     }}
                   >
+                    <CheckCheck className="w-4 h-4" />
                     Mark as Paid
                   </Button>
-                  <Button>
-                    <Link href={`/api/invoices/${invoice.id}/pdf`} download>
-                      Download PDF
-                    </Link>
+                  <Link
+                    className=""
+                    href={`/api/invoices/${invoice.id}/pdf`}
+                    download
+                  >
+                    <Button>
+                      <Download className="w-4 h-4" />
+                      PDF
+                    </Button>
+                  </Link>
+                  <Button
+                    disabled={loading}
+                    onClick={async () => {
+                      setLoading(true);
+
+                      await fetch(`/api/invoices/${invoice.id}/send`, {
+                        method: "POST",
+                      });
+                      alert("Email sent!");
+                      setLoading(false);
+                      return;
+                    }}
+                  >
+                    <Send className="w-4 h-4" />
+                    Send Email
                   </Button>
                 </TableCell>
               </TableRow>
