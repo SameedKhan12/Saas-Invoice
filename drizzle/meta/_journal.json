@@ -36,6 +36,13 @@
       "when": 1776106199492,
       "tag": "0004_ambitious_outlaw_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1776154761011,
+      "tag": "0005_bright_retro_girl",
+      "breakpoints": true
     }
   ]
 }

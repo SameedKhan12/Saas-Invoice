@@ -5,5 +5,5 @@ export function toCents(amount: number): number {
 
 // Use this in your TABLE for display
 export function formatCurrency(cents: number): string {
-  return (cents / 10000).toFixed(2);
+  return (cents / 100).toFixed(2);
 }

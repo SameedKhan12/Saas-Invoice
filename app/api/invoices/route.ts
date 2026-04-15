@@ -18,7 +18,9 @@ export async function GET() {
       .select({
         id: invoices.id,
         clientId: clients.name,
+        description: invoices.description,
         amount_cents: invoices.amount_cents,
+        dueDate: invoices.dueDate,
         status: invoices.status,
       })
       .from(invoices)
@@ -36,31 +38,46 @@ export async function GET() {
   }
 }
 
+
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const session = await auth();
+    
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const id = session.user.id;
+
+    const userId = session.user.id;
+
+    // Calculate total from items
+    const totalCents = body.items.reduce((sum: number, item: any) => {
+      return sum + (item.quantity * item.unitPrice * 100); // convert to cents
+    }, 0);
+
     const newInvoice = await db
       .insert(invoices)
       .values({
-        userId: id,
+        userId,
         clientId: body.clientId,
-        amount_cents: body.amount * 100,
+        description: body.description || null,
+        items: body.items || [],
+        amount_cents: totalCents,
+        dueDate: body.dueDate ? new Date(body.dueDate) : null,
         status: body.status || "draft",
       })
       .returning();
+
     return NextResponse.json(
       { success: true, invoice: newInvoice[0] },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (error) {
+    console.error("Invoice creation error:", error);
     return NextResponse.json(
       { success: false, error: "Failed to create invoice" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

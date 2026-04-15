@@ -12,7 +12,6 @@ export async function DELETE(
   const { id } = await params;
   try {
     await db.delete(clients).where(eq(clients.id, id));
-    await db.delete(invoices).where(eq(invoices.clientId,id))
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("Error deleting client:", error);
