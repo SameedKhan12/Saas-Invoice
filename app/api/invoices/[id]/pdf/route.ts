@@ -37,13 +37,15 @@ export async function GET(
     .from(clients)
     .where(eq(clients.id, invoice[0].clientId));
 
-  const pdfBytes = await generateInvoicePDF(
-    invoice[0],
-    client[0]?.name || "Unknown",
-  );
+  // const pdfBytes = await generateInvoicePDF(
+  //   invoice[0],
+  //   client[0]?.name || "Unknown",
+  // );
+
+  const pdfBuffer = await generateInvoicePDF(invoice[0], client[0]?.name || "Unknown");
   console.log("invoice:", invoice);
   console.log("client:", client);
-  return new NextResponse(Buffer.from(pdfBytes), {
+  return new NextResponse(Buffer.from(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename=invoice-${invoice[0].id}.pdf`,
