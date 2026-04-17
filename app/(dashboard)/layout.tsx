@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import { AppSidebar } from "@/components/app-sidebar";

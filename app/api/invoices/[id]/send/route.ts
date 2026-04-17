@@ -6,9 +6,11 @@ import { auth } from "@/lib/auth";
 import { generateInvoicePDF } from "@/lib/pdf";
 import { sendInvoiceEmail } from "@/lib/email";
 
+type RouteParams = Promise<{ id: string }>;
+
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: RouteParams}
 ) {
   try{
 
@@ -59,6 +61,6 @@ export async function POST(
   }
   return NextResponse.json({ success: true },{status:201});
 } catch(error){
-  return NextResponse.json({success:false},{status:401})
+  return NextResponse.json({success:false,error:error},{status:401})
 }
 }

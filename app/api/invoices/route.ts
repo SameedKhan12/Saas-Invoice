@@ -1,7 +1,7 @@
 import db from "@/db";
 import { NextResponse } from "next/server";
-import { eq, gte } from "drizzle-orm";
-import { clients, invoices } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { clients, InvoiceItem, invoices } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 export async function GET() {
@@ -41,6 +41,7 @@ export async function GET() {
 
 
 export async function POST(req: Request) {
+  
   try {
     const body = await req.json();
     const session = await auth();
@@ -49,12 +50,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const userId = session.user.id;
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     // Calculate total from items
-    const totalCents = body.items.reduce((sum: number, item: any) => {
+    const totalCents = body.items.reduce((sum: number, item: InvoiceItem) => {
       return sum + (item.quantity * item.unitPrice * 100); // convert to cents
     }, 0);
+
 
     const newInvoice = await db
       .insert(invoices)

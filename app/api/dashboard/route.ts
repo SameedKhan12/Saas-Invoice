@@ -2,16 +2,16 @@
 import db from "@/db";
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import { clients, Invoice, invoices } from "@/db/schema";
+import { clients,  invoices } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function GET() {
   try {
     const session = await auth();
-    if (!session?.user) {
+    const id = session?.user?.id;
+    if (!id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const id = session.user.id;
     
     const allClients = await db.select().from(clients).where(eq(clients.userId, id));
     const allInvoices = await db.select().from(invoices).where(eq(invoices.userId, id));

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState, useTransition } from "react";
-import { Edit2Icon, Search, SearchIcon, Trash } from "lucide-react";
+import { Edit2Icon, SearchIcon, Trash } from "lucide-react";
 
 import { clientSchema } from "@/lib/utils";
 import {
@@ -36,17 +35,23 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import ClientsLoading from "./ClientsLoading";
+import { Clients } from "@/db/schema";
+
+interface ClientForm{
+  name:string;
+  email:string;
+}
 
 export default function CLientsPage() {
   const [fetching, setFetching] = useState(false);
-  const [clients, setClients] = useState<any[]>([]);
-  const [form, setForm] = useState({
+  const [clients, setClients] = useState<Clients[]>([]);
+  const [form, setForm] = useState<ClientForm>({
     name: "",
     email: "",
   });
   const [isPending, startTransition] = useTransition();
-  const [errors, setErrors] = useState<any>({});
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [errors, setErrors] = useState<Partial<Record<keyof ClientForm, string>>>({});
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
   async function fetchClients() {
@@ -69,9 +74,10 @@ export default function CLientsPage() {
     e.preventDefault();
     const result = clientSchema.safeParse(form);
     if (!result.success) {
-      const fieldErrors: any = {};
+      const fieldErrors: Partial<Record<keyof ClientForm, string>> = {};
       result.error.issues.forEach((err) => {
-        fieldErrors[err.path[0]] = err.message;
+        const path = err.path[0] as keyof ClientForm;
+        fieldErrors[path] = err.message;
       });
       setErrors(fieldErrors);
       return;
@@ -107,7 +113,7 @@ export default function CLientsPage() {
           },
           body: JSON.stringify(form),
         });
-        const newClient = await response.json();
+        const newClient:Clients = await response.json();
         console.log(newClient);
         setClients([...clients, newClient]);
         setForm({ name: "", email: "" });
@@ -141,11 +147,11 @@ export default function CLientsPage() {
     });
   }
 
-  const filteredClients = clients.filter(
+  const filteredClients = Array.isArray(clients)?clients.filter(
     (clients) =>
       clients.name.toLowerCase().includes(search.toLocaleLowerCase()) ||
       clients.email.toLowerCase().includes(search.toLocaleLowerCase()),
-  );
+  ):[];
 
   return (
     <div className="flex w-full gap-12 lg:gap-0.5 justify-between flex-col lg:flex-row px-4">
@@ -256,7 +262,7 @@ export default function CLientsPage() {
                 <TableRow key={client.id}>
                   <TableCell>{client.name}</TableCell>
                   <TableCell>{client.email}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right flex gap-2 justify-end">
                     <Button
                       variant={"outline"}
                       size={"icon"}

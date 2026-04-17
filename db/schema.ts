@@ -38,3 +38,4 @@ export const invoices = pgTable("invoices", {
 })
 
 export type Invoice = InferSelectModel<typeof invoices>
+export type Clients = InferSelectModel<typeof clients>

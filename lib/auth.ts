@@ -35,7 +35,7 @@
 // })
 
 // auth.ts
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import db from "@/db"; 
 import { users } from "@/db/schema"; 
@@ -81,7 +81,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token }) {
       if (token.email) {
         const [dbUser] = await db.select().from(users).where(eq(users.email, token.email));
         if (dbUser) token.id = dbUser.id;

@@ -7,10 +7,10 @@ import { auth } from "@/lib/auth";
 export async function GET() {
   try {
     const session = await auth();
-    if(!session?.user){
+    const id= session?.user?.id;
+    if(!id){
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const id= session.user.id;
     const allClients = await db.select().from(clients).where(eq(clients.userId, id));
     return NextResponse.json(allClients);
   } catch (error) {
@@ -24,12 +24,13 @@ export async function POST(req: Request){
     try {
         const body = await req.json();
         const session = await auth();
-        if (!session?.user) {
+        const userId = session?.user?.id;
+        if (!userId) {
           return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const newClient = await db.insert(clients).values({
-            userId: session.user.id,
+            userId,
             name: body.name,
             email: body.email,
         }).returning();

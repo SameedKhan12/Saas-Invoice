@@ -2,9 +2,7 @@
 import db from "@/db";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { clients, invoices } from "@/db/schema";
-import { UUID } from "crypto";
-import { error } from "console";
+import { clients } from "@/db/schema";
 
 type RouteParams = Promise<{ id:string }>
 

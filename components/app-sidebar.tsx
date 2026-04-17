@@ -14,7 +14,6 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Button } from "./ui/button";
 import { LayoutDashboard, Users, FileText, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 

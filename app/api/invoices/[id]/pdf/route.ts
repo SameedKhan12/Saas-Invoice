@@ -4,12 +4,12 @@ import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { generateInvoicePDF } from "@/lib/pdf";
-import { pgTable, PgTable } from "drizzle-orm/pg-core";
-import { UUID } from "crypto";
+
+type RouteParams = Promise<{ id: string }>;
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: UUID }> },
+  { params }: { params: RouteParams },
 ) {
   const session = await auth();
 

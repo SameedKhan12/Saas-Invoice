@@ -1,10 +1,11 @@
 import db from "@/db";
 import { invoices } from "@/db/schema";
-import { UUID } from "crypto";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: UUID }> }) {
+type RouteParams = Promise<{ id: string }>;
+
+export async function PATCH(request: Request, { params }: { params: RouteParams }) {
     try{        
         const { id } = await params;
         console.log("Received request to mark invoice as paid with ID:", id);

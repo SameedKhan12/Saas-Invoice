@@ -1,4 +1,3 @@
-import db from "@/db";
 
 export async function markAsPaid(id: string) {
     try {

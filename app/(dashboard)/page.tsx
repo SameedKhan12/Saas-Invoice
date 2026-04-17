@@ -5,7 +5,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
 import { useEffect, useState } from "react";
-import { Users, FileText, DollarSign, TrendingUp, AlertCircle, Clock } from "lucide-react";
+import { Users, FileText, DollarSign,  AlertCircle, Clock } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, Pie, PieChart, Label } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
 
