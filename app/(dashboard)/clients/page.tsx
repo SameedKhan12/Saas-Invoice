@@ -148,7 +148,7 @@ export default function CLientsPage() {
   );
 
   return (
-    <div className="flex w-full gap-0.5 justify-between ">
+    <div className="flex w-full gap-12 lg:gap-0.5 justify-between flex-col lg:flex-row px-4">
       <div className="space-y-6 w-full">
         <h1 className="text-2xl font-semibold">Clients</h1>
         <Field className="max-w-lg">

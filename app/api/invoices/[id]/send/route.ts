@@ -42,9 +42,14 @@ export async function POST(
     );
     
   const {success}=await sendInvoiceEmail({
-    to: client[0]?.email || "",
-    pdfBytes,
-  });
+  to: client[0].email,
+  pdfBytes,
+  clientName: client[0].name,
+  invoiceNumber: invoice[0].id.slice(0, 8).toUpperCase(),
+  amount: invoice[0].amount_cents,
+  dueDate: invoice[0].dueDate?.toISOString(),
+  companyName: "Your Company Name",
+});
   if(invoice[0].status!=='pending' && success){
     await db
     .update(invoices)
