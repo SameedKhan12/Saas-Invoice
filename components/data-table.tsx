@@ -229,3 +229,255 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
+
+// components/data-table.tsx
+// "use client";
+
+// import * as React from "react";
+// import {
+//   ColumnDef,
+//   ColumnFiltersState,
+//   SortingState,
+//   VisibilityState,
+//   flexRender,
+//   getCoreRowModel,
+//   getFilteredRowModel,
+//   getPaginationRowModel,
+//   getSortedRowModel,
+//   useReactTable,
+// } from "@tanstack/react-table";
+// import { ChevronDown } from "lucide-react";
+
+// import { Button } from "@/components/ui/button";
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { Input } from "@/components/ui/input";
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableHead,
+//   TableHeader,
+//   TableRow,
+// } from "@/components/ui/table";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+
+// interface DataTableProps<TData, TValue> {
+//   columns: ColumnDef<TData, TValue>[];
+//   data: TData[];
+// }
+
+// export function DataTable<TData, TValue>({
+//   columns,
+//   data,
+// }: DataTableProps<TData, TValue>) {
+//   const [sorting, setSorting] = React.useState<SortingState>([]);
+//   const [columnFilters, setColumnFilters] =
+//     React.useState<ColumnFiltersState>([]);
+//   const [columnVisibility, setColumnVisibility] =
+//     React.useState<VisibilityState>({
+//       // Hide less important columns on mobile by default
+//       description: false,
+//       dueDate: false,
+//       select: false,
+//     });
+//   const [rowSelection, setRowSelection] = React.useState({});
+
+//   const table = useReactTable({
+//     data,
+//     columns,
+//     onSortingChange: setSorting,
+//     onColumnFiltersChange: setColumnFilters,
+//     getCoreRowModel: getCoreRowModel(),
+//     getPaginationRowModel: getPaginationRowModel(),
+//     getSortedRowModel: getSortedRowModel(),
+//     getFilteredRowModel: getFilteredRowModel(),
+//     onColumnVisibilityChange: setColumnVisibility,
+//     onRowSelectionChange: setRowSelection,
+//     state: {
+//       sorting,
+//       columnFilters,
+//       columnVisibility,
+//       rowSelection,
+//     },
+//   });
+
+//   return (
+//     <div className="w-full space-y-4">
+//       <div className="flex items-center justify-between gap-2">
+//         <div className="flex flex-1 items-center gap-2">
+//           <Input
+//             placeholder="Filter by invoice ID..."
+//             value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+//             onChange={(event) =>
+//               table.getColumn("id")?.setFilterValue(event.target.value)
+//             }
+//             className="w-full sm:max-w-xs"
+//           />
+//           <Select
+//             value={
+//               (table.getColumn("status")?.getFilterValue() as string) ?? "all"
+//             }
+//             onValueChange={(value) =>
+//               table
+//                 .getColumn("status")
+//                 ?.setFilterValue(value === "all" ? "" : value)
+//             }
+//           >
+//             <SelectTrigger className="w-full sm:w-44">
+//               <SelectValue placeholder="Filter by status" />
+//             </SelectTrigger>
+//             <SelectContent>
+//               <SelectItem value="all">All Statuses</SelectItem>
+//               <SelectItem value="draft">Draft</SelectItem>
+//               <SelectItem value="pending">Pending</SelectItem>
+//               <SelectItem value="paid">Paid</SelectItem>
+//               <SelectItem value="overdue">Overdue</SelectItem>
+//             </SelectContent>
+//           </Select>
+//         </div>
+
+//         {/* Columns toggle */}
+//         <DropdownMenu>
+//           <DropdownMenuTrigger asChild>
+//             <Button variant="outline" className="ml-auto">
+//               Columns <ChevronDown className="ml-2 h-4 w-4" />
+//             </Button>
+//           </DropdownMenuTrigger>
+//           <DropdownMenuContent align="end" className="w-48">
+//             {table
+//               .getAllColumns()
+//               .filter((col) => col.getCanHide())
+//               .map((col) => (
+//                 <DropdownMenuCheckboxItem
+//                   key={col.id}
+//                   className="capitalize"
+//                   checked={col.getIsVisible()}
+//                   onCheckedChange={(value) => col.toggleVisibility(!!value)}
+//                 >
+//                   {col.id}
+//                 </DropdownMenuCheckboxItem>
+//               ))}
+//           </DropdownMenuContent>
+//         </DropdownMenu>
+//       </div>
+//       <div className="rounded-md border">
+//         <Table>
+//           <TableHeader>
+//             {table.getHeaderGroups().map((headerGroup) => (
+//               <TableRow key={headerGroup.id}>
+//                 {headerGroup.headers.map((header) => (
+//                   <TableHead key={header.id} className="whitespace-nowrap">
+//                     {header.isPlaceholder
+//                       ? null
+//                       : flexRender(
+//                           header.column.columnDef.header,
+//                           header.getContext()
+//                         )}
+//                   </TableHead>
+//                 ))}
+//               </TableRow>
+//             ))}
+//           </TableHeader>
+//           <TableBody>
+//             {table.getRowModel().rows?.length ? (
+//               table.getRowModel().rows.map((row) => (
+//                 <TableRow
+//                   key={row.id}
+//                   data-state={row.getIsSelected() && "selected"}
+//                 >
+//                   {row.getVisibleCells().map((cell) => (
+//                     <TableCell key={cell.id} className="whitespace-nowrap">
+//                       {flexRender(
+//                         cell.column.columnDef.cell,
+//                         cell.getContext()
+//                       )}
+//                     </TableCell>
+//                   ))}
+//                 </TableRow>
+//               ))
+//             ) : (
+//               <TableRow>
+//                 <TableCell
+//                   colSpan={columns.length}
+//                   className="h-24 text-center text-muted-foreground"
+//                 >
+//                   No invoices found.
+//                 </TableCell>
+//               </TableRow>
+//             )}
+//           </TableBody>
+//         </Table>
+//       </div>
+
+//       {/* Pagination */}
+//       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between py-2">
+//         {/* Selected count */}
+//         <p className="text-sm text-muted-foreground text-center sm:text-left">
+//           {table.getFilteredSelectedRowModel().rows.length} of{" "}
+//           {table.getFilteredRowModel().rows.length} row(s) selected.
+//         </p>
+
+//         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+//           {/* Rows per page */}
+//           <div className="flex items-center justify-center gap-2">
+//             <p className="text-sm font-medium whitespace-nowrap">
+//               Rows per page
+//             </p>
+//             <Select
+//               value={`${table.getState().pagination.pageSize}`}
+//               onValueChange={(value) => table.setPageSize(Number(value))}
+//             >
+//               <SelectTrigger className="h-8 w-20">
+//                 <SelectValue
+//                   placeholder={table.getState().pagination.pageSize}
+//                 />
+//               </SelectTrigger>
+//               <SelectContent side="top">
+//                 {[10, 20, 30, 40, 50].map((size) => (
+//                   <SelectItem key={size} value={`${size}`}>
+//                     {size}
+//                   </SelectItem>
+//                 ))}
+//               </SelectContent>
+//             </Select>
+//           </div>
+
+//           {/* Page nav */}
+//           <div className="flex items-center justify-center gap-2">
+//             <p className="text-sm font-medium whitespace-nowrap">
+//               Page {table.getState().pagination.pageIndex + 1} of{" "}
+//               {table.getPageCount()}
+//             </p>
+//             <Button
+//               variant="outline"
+//               size="sm"
+//               onClick={() => table.previousPage()}
+//               disabled={!table.getCanPreviousPage()}
+//             >
+//               Previous
+//             </Button>
+//             <Button
+//               variant="outline"
+//               size="sm"
+//               onClick={() => table.nextPage()}
+//               disabled={!table.getCanNextPage()}
+//             >
+//               Next
+//             </Button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }

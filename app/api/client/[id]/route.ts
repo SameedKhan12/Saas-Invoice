@@ -3,13 +3,14 @@ import db from "@/db";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { clients } from "@/db/schema";
+import { auth } from "@/lib/auth";
 
 type RouteParams = Promise<{ id:string }>
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: RouteParams },
-) {
+export const DELETE = auth(async function DELETE(req,{ params }: { params: RouteParams },) {
+  if(!req.auth){
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const { id } = await params;
   try {
     if(!id){
@@ -23,9 +24,12 @@ export async function DELETE(
     console.error("Error deleting client:", error);
     return NextResponse.json({ success: false, error: error }, { status: 500 });
   }
-}
+})
 
-export async function PUT(req: Request, { params }: { params: RouteParams } ) {
+export  const PUT = auth(async function PUT(req,{ params }: { params: RouteParams },) {
+  if(!req.auth){
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const { id } = await params;
   try {
     const body = await req.json();
@@ -48,4 +52,4 @@ export async function PUT(req: Request, { params }: { params: RouteParams } ) {
     console.error("Error updating client:", error);
     return NextResponse.json({ success: false, error: error }, { status: 500 });
   }
-}
+})

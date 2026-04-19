@@ -5,9 +5,12 @@ import { NextResponse } from "next/server";
 import { clients,  invoices } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET() {
+export const GET= auth(async function GET(req) {
+  if(!req.auth){
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    const session = await auth();
+    const session = await req.auth;
     const id = session?.user?.id;
     if (!id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -110,4 +113,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+})
