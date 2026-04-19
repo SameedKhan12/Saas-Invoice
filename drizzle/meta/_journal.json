@@ -43,6 +43,13 @@
       "when": 1776154761011,
       "tag": "0005_bright_retro_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1776605436018,
+      "tag": "0006_lean_rogue",
+      "breakpoints": true
     }
   ]
 }

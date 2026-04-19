@@ -37,9 +37,10 @@ interface SendInvoiceEmailOptions {
   pdfBytes: Uint8Array;
   clientName: string;
   invoiceNumber: string;
-  amount: number;        // in cents
+  amount: number; // in cents
   dueDate?: string | null;
   companyName?: string;
+  paymentUrl: string;
 }
 
 function formatCurrency(cents: number) {
@@ -64,6 +65,7 @@ function buildEmailHtml({
   amount,
   dueDate,
   companyName,
+  paymentUrl
 }: Omit<SendInvoiceEmailOptions, "to" | "pdfBytes">) {
   const formattedAmount = formatCurrency(amount);
   const formattedDueDate = formatDate(dueDate);
@@ -120,7 +122,9 @@ function buildEmailHtml({
                     </table>
                   </td>
                 </tr>
-                ${formattedDueDate ? `
+                ${
+                  formattedDueDate
+                    ? `
                 <tr>
                   <td style="padding:16px 24px;">
                     <table width="100%" cellpadding="0" cellspacing="0">
@@ -137,7 +141,9 @@ function buildEmailHtml({
                       </tr>
                     </table>
                   </td>
-                </tr>` : ""}
+                </tr>`
+                    : ""
+                }
               </table>
 
               <p style="margin:0 0 6px;font-size:14px;color:#71717a;line-height:1.6;">
@@ -145,6 +151,15 @@ function buildEmailHtml({
               </p>
             </td>
           </tr>
+          <tr>
+  <td style="padding:0 40px 32px;">
+    <a href="${paymentUrl}" 
+      style="display:block;width:100%;text-align:center;background-color:#18181b;color:#ffffff;
+      text-decoration:none;padding:14px 0;border-radius:8px;font-size:14px;font-weight:600;">
+      Pay Now
+    </a>
+  </td>
+</tr>
 
           <!-- Footer -->
           <tr>
@@ -171,13 +186,21 @@ export async function sendInvoiceEmail({
   amount,
   dueDate,
   companyName,
+  paymentUrl
 }: SendInvoiceEmailOptions) {
   try {
     await resend.emails.send({
       from: "onboarding@resend.dev",
       to,
       subject: `Invoice #${invoiceNumber} from ${companyName ?? "Us"} — ${formatCurrency(amount)} due`,
-      html: buildEmailHtml({ clientName, invoiceNumber, amount, dueDate, companyName }),
+      html: buildEmailHtml({
+        clientName,
+        invoiceNumber,
+        amount,
+        dueDate,
+        companyName,
+        paymentUrl
+      }),
       text: `Hi ${clientName},\n\nPlease find your invoice #${invoiceNumber} attached.\n\nAmount due: ${formatCurrency(amount)}${dueDate ? `\nDue date: ${formatDate(dueDate)}` : ""}\n\nIf you have any questions, reply to this email.\n\n${companyName ?? ""}`,
       attachments: [
         {

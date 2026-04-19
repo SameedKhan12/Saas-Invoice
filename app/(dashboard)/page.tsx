@@ -1,13 +1,32 @@
-
 // app/(dashboard)/page.tsx
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartConfig,
+} from "@/components/ui/chart";
 import { useEffect, useState } from "react";
-import { Users, FileText, DollarSign,  AlertCircle, Clock } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, Pie, PieChart, Label } from "recharts";
+import { Users, FileText, DollarSign, AlertCircle, Clock } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  Pie,
+  PieChart,
+  Label,
+} from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 interface DashboardStats {
   totalClients: number;
@@ -121,11 +140,15 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Invoices
+            </CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalInvoices || 0}</div>
+            <div className="text-2xl font-bold">
+              {stats?.totalInvoices || 0}
+            </div>
             <p className="text-xs text-muted-foreground">All time</p>
           </CardContent>
         </Card>
@@ -145,7 +168,9 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Revenue
+            </CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -167,10 +192,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-75 w-full">
-              <BarChart
-                accessibilityLayer
-                data={stats?.revenueByMonth || []}
-              >
+              <BarChart accessibilityLayer data={stats?.revenueByMonth || []}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="month"
@@ -224,7 +246,8 @@ export default function Dashboard() {
                             <span className="capitalize">{name}</span>
                           </div>
                           <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
-                            {item.payload.count} invoice{item.payload.count !== 1 ? 's' : ''}
+                            {item.payload.count} invoice
+                            {item.payload.count !== 1 ? "s" : ""}
                           </div>
                           <div className="ml-auto flex items-baseline gap-0.5 font-mono text-sm text-muted-foreground">
                             ${Number(item.payload.amount).toFixed(2)}
@@ -283,14 +306,18 @@ export default function Dashboard() {
           {stats.overdueRevenue > 0 && (
             <Card className="border-destructive/50">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Overdue Revenue</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Overdue Revenue
+                </CardTitle>
                 <AlertCircle className="h-4 w-4 text-destructive" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-destructive">
                   ${stats.overdueRevenue.toFixed(2)}
                 </div>
-                <p className="text-xs text-muted-foreground">Requires immediate attention</p>
+                <p className="text-xs text-muted-foreground">
+                  Requires immediate attention
+                </p>
               </CardContent>
             </Card>
           )}
@@ -298,7 +325,9 @@ export default function Dashboard() {
           {stats.draftRevenue > 0 && (
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Draft Invoices</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Draft Invoices
+                </CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>

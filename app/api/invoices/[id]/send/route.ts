@@ -51,6 +51,7 @@ export async function POST(
   amount: invoice[0].amount_cents,
   dueDate: invoice[0].dueDate?.toISOString(),
   companyName: "Your Company Name",
+  paymentUrl:`${process.env.NEXT_PUBLIC_BASE_URL}/pay/${invoice[0].id}`
 });
   if(invoice[0].status!=='pending' && success){
     await db

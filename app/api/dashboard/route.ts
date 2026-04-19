@@ -2,7 +2,7 @@
 import db from "@/db";
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import { clients,  invoices } from "@/db/schema";
+import { clients,  invoices, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const GET= auth(async function GET(req) {
@@ -12,9 +12,20 @@ export const GET= auth(async function GET(req) {
   try {
     const session = await req.auth;
     const id = session?.user?.id;
-    if (!id) {
+    const email = session?.user?.email;
+
+    if (!id || !email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    
+    const [existingUser] = await db.select().from(users).where(eq(users.id,id))
+     if (!existingUser) {
+          await db.insert(users).values({
+            id: id, 
+            email: email,
+            password: "oauth_authenticated",
+          });
+        }
     
     const allClients = await db.select().from(clients).where(eq(clients.userId, id));
     const allInvoices = await db.select().from(invoices).where(eq(invoices.userId, id));
