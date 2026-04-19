@@ -26,7 +26,6 @@ import {
   Label,
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 
 interface DashboardStats {
   totalClients: number;

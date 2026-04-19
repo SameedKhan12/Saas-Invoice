@@ -1,6 +1,5 @@
 "use client";
 
-import InvoicePreview from "@/components/invoice-preview";
 import { Button } from "@/components/ui/button";
 import { InvoiceItem } from "@/db/schema";
 import { useEffect, useState } from "react";
@@ -29,7 +28,7 @@ type Invoice = {
 }
 
 export default function PayPage({ params }: { params: RouteParams }) {
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [invoice, setInvoice] = useState<Invoice>();
 
   const handlePay = async () => {

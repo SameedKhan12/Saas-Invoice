@@ -1,5 +1,4 @@
 import { pgTable, unique, uuid, text, timestamp, integer, jsonb, pgEnum } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
 
 export const status = pgEnum("status", ['draft', 'pending', 'paid', 'overdue'])
 

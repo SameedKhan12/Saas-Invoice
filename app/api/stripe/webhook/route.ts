@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import db from "@/db";
 import { invoices } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import Stripe from "stripe";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
 
   // 🎯 Handle only what you need
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as any;
+    const session = event.data.object as Stripe.Checkout.Session;
 
     const invoiceId = session.metadata?.invoiceId;
 

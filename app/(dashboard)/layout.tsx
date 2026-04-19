@@ -1,13 +1,12 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import { AppSidebar } from "@/components/app-sidebar";
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { users } from "@/db/schema";
 import db from "@/db";
 import { eq } from "drizzle-orm";
-import { AlertCircle } from "lucide-react";
 import { StripeConnectBanner } from "@/components/stripe-connect-banner";
 
 export default async function DashboardLayout({
@@ -37,8 +36,11 @@ export default async function DashboardLayout({
           <h1 className="font-semibold">Dashboard</h1>
         </div>
         {!userData.stripeAccountId && <StripeConnectBanner />}
+        <SessionProvider>
+
 
         <div className="p-6">{children}</div>
+        </SessionProvider>
       </main>
     </SidebarProvider>
   );
