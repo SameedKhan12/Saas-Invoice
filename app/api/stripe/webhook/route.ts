@@ -1,54 +1,42 @@
 import { stripe } from "@/lib/stripe";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import db from "@/db";
 import { invoices } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import Stripe from "stripe";
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const sig = req.headers.get("stripe-signature");
+  const headerList = await headers();
+  const sig = headerList.get("stripe-signature")!;
 
-  if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
-    return new NextResponse("Missing signature or secret", { status: 400 });
-  }
+  let event;
 
   try {
-    // 1. Use the v2 parser for Thin Events
-    const event = stripe.parseEventNotification(
+    event = stripe.webhooks.constructEvent(
       body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
-
-    // Cast as 'any' to bypass strict v2 vs v1 type conflicts
-    const eventType = event.type as string;
-
-    if (eventType === "checkout.session.completed") {
-      // 2. Safely extract the Session ID from the thin payload
-      const thinEvent = event as any;
-      const sessionId = thinEvent.context?.object_id || thinEvent.data?.object?.id;
-
-      if (!sessionId) {
-        throw new Error("Session ID missing in thin event payload");
-      }
-
-      // 3. FETCH the full session to access metadata (since Thin events skip it)
-      const fullSession = await stripe.checkout.sessions.retrieve(sessionId);
-      const invoiceId = fullSession.metadata?.invoiceId;
-
-      if (invoiceId) {
-        await db
-          .update(invoices)
-          .set({ status: "paid" })
-          .where(eq(invoices.id, invoiceId));
-        
-        console.log(`✅ Success: Invoice ${invoiceId} updated to paid.`);
-      }
-    }
-
-    return NextResponse.json({ received: true });
-  } catch (err: any) {
-    console.error(`❌ Webhook Error: ${err.message}`);
-    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+  } catch (err) {
+    return new NextResponse("Webhook error", { status: 400 });
   }
+
+  // 🎯 Handle only what you need
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+
+    const invoiceId = session.metadata?.invoiceId;
+
+    if (invoiceId) {
+      await db
+        .update(invoices)
+        .set({ status: "paid" })
+        .where(eq(invoices.id, invoiceId));
+    }
+  }
+
+  // ✅ ALWAYS RETURN (this fixes your crash)
+  return NextResponse.json({ received: true });
 }
