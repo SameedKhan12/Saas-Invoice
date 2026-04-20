@@ -24,6 +24,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { Trash, Plus } from "lucide-react";
 import InvoicePreview, { InvoicePreviewData } from "@/components/invoice-preview";
 import { InvoiceItem } from "@/db/schema";
+import { toast } from "sonner";
 
 interface Client {
   id: string;
@@ -140,12 +141,14 @@ export default function NewInvoicePage() {
       });
       if (res.ok) {
         setSuccess(true);
+        toast.success("Invoice creatred")
       } else {
         const data = await res.json();
         setErrors({ submit: data.error || "Failed to create invoice" });
       }
     } catch {
       setErrors({ submit: "Failed to create invoice" });
+      toast.error(errors.submit || "Failed to create invoice" )
     } finally {
       setSubmitting(false);
     }

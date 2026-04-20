@@ -1,5 +1,5 @@
 import db from "@/db";
-import { invoices, clients } from "@/db/schema";
+import { invoices, clients, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -15,22 +15,32 @@ export async function POST(
   try{
 
     const session = await auth();
+    const userId =  session?.user?.id;
     
-    if (!session?.user?.id) {
-      return new NextResponse("Unauthorized", { status: 401 });
+    if (!userId) {
+       throw new Error("Unauthorized")
     }
     
     const { id } = await params;
+
+    const user = await db.select().from(users).where(eq(users.id,userId))
     
+    if(!user[0].stripeAccountId){
+      throw new Error("stripe account not connected")
+    }
     
     const invoice = await db
     .select()
     .from(invoices)
-    .where(and(eq(invoices.id, id), eq(invoices.userId, session.user.id)));
+    .where(and(eq(invoices.id, id), eq(invoices.userId, userId)));
     
     
     if (!invoice) {
-      return new NextResponse("Not found", { status: 404 });
+      throw new Error("invoice not found")
+    }
+
+    if(invoice[0].status === "paid") {
+      throw new Error("Invoice has already been paid")
     }
     
     const client = await db
@@ -62,6 +72,7 @@ export async function POST(
   }
   return NextResponse.json({ success: true },{status:201});
 } catch(error){
-  return NextResponse.json({success:false,error:error},{status:401})
+  console.error(error,"POST /api/invoices/[id]/send")
+  return NextResponse.json({success:false,error:error},{status:404})
 }
 }

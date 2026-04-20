@@ -1,27 +1,27 @@
-// export { auth as proxy } from "@/lib/auth";
-
-
-
-// export const config = {
-//    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|login|signup|$).*)"]
-// }
-// middleware.ts (Renamed from proxy.ts)
-// proxy.ts
+// middleware.ts
 import { auth } from "./lib/auth"; 
 
-// Next.js 16 looks for this named export
 export const proxy = auth((req) => {
+  const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-  const isAuthPage = req.nextUrl.pathname.startsWith('/login') || 
-                     req.nextUrl.pathname.startsWith('/signup');
+  
+  // 1. Check if the request is for the Stripe Webhook
+  const isStripeWebhook = nextUrl.pathname === "/api/stripe/webhook";
+  const isAuthPage = nextUrl.pathname.startsWith('/login') || 
+                     nextUrl.pathname.startsWith('/signup');
 
-  // If not logged in and trying to access dashboard
+  // 2. If it's the webhook, do nothing (let it pass through)
+  if (isStripeWebhook) {
+    return; 
+  }
+
+  // 3. Protect your other routes
   if (!isLoggedIn && !isAuthPage) {
-    return Response.redirect(new URL('/login', req.nextUrl));
+    return Response.redirect(new URL('/login', nextUrl));
   }
 })
 
 export const config = {
-  // Ensure your matcher covers the dashboard
+  // This matcher ignores internal Next.js files and the api route
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|$).*)"],
 }

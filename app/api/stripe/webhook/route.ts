@@ -37,6 +37,5 @@ export async function POST(req: Request) {
     }
   }
 
-  // ✅ ALWAYS RETURN (this fixes your crash)
   return NextResponse.json({ received: true });
 }

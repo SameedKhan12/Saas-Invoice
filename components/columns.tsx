@@ -17,6 +17,7 @@ import { Invoice } from "@/db/schema";
 import { formatCurrency } from "@/lib/utils/amountConverter";
 import { getBadgeColor } from "@/lib/utils/utilityFunctions";
 import { ArrowUpDown, MoreHorizontal, Send, CheckCheck, Download } from "lucide-react";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<Invoice>[] = [
   {
@@ -177,11 +178,20 @@ export const columns: ColumnDef<Invoice>[] = [
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={async () => {
-                await fetch(`/api/invoices/${invoice.id}/send`, {
+                try{
+                const res = await fetch(`/api/invoices/${invoice.id}/send`, {
                   method: "POST",
                 });
-                alert("Email sent!");
+                if(!res.ok){
+                  const data = await res.json()
+                  throw new Error(data.error)
+                }
+                toast.success("Email sent",{description:"Email has been sent to the client"})
+              }catch(err){
+                toast.error("Unexpected error while sending email")
+              }
               }}
+              disabled ={invoice.status === "paid"}
             >
               <Send className="mr-2 h-4 w-4" />
               Send Email

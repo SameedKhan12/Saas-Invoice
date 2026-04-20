@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/input-group";
 import ClientsLoading from "./ClientsLoading";
 import { Clients } from "@/db/schema";
+import { toast } from "sonner";
 
 interface ClientForm{
   name:string;
@@ -114,11 +115,12 @@ export default function CLientsPage() {
           body: JSON.stringify(form),
         });
         const newClient:Clients = await response.json();
-        console.log(newClient);
         setClients([...clients, newClient]);
+        toast.success("Client added")
         setForm({ name: "", email: "" });
       } catch (error) {
         console.error("Error adding client:", error);
+        toast.error("Unexpected error while creating client")
       }
     }
     setForm({ name: "", email: "" });
@@ -138,10 +140,12 @@ export default function CLientsPage() {
         const result = await response.json();
         if (result.success) {
           setClients(clients.filter((client) => client.id !== id));
+          toast.success("Client Deleted")
           return;
         }
         throw new Error(result.error);
       } catch (error) {
+        toast.error("Error while deleting the client")
         console.error("Error deleting client:", error);
       }
     });
