@@ -79,6 +79,7 @@ import { Button } from "@/components/ui/button";
 import { Invoice } from "@/db/schema";
 import { columns } from "@/components/columns"; 
 import { DataTable } from "@/components/data-table";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -116,6 +117,7 @@ export default function InvoicesPage() {
 
   return (
     <div className="container mx-auto py-10">
+      <Toaster/>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Invoices</h1>

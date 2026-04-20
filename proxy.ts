@@ -1,9 +1,14 @@
 // middleware.ts
 import { auth } from "./lib/auth"; 
+import { NextResponse } from "next/server";
 
 export const proxy = auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
+
+  if (req.nextUrl.pathname.startsWith("/api/stripe/webhook")) {
+    return NextResponse.next(); 
+  }
   
   // 1. Check if the request is for the Stripe Webhook
   const isStripeWebhook = nextUrl.pathname === "/api/stripe/webhook";

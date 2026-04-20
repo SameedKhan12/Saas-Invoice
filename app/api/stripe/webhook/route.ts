@@ -12,6 +12,7 @@ export async function POST(req: Request) {
   const sig = headerList.get("stripe-signature")!;
 
   let event;
+  console.log("SECRET CHECK:", process.env.STRIPE_WEBHOOK_SECRET?.slice(0, 10));
 
   try {
     event = stripe.webhooks.constructEvent(
