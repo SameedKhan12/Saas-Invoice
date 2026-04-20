@@ -20,8 +20,10 @@ export async function POST(req: Request) {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err) {
-    return new NextResponse("Webhook error", { status: 400 });
+  } catch (err:any) {
+    console.error(`❌ Webhook Error: ${err.message}`);
+    // This is likely where your 400 is coming from
+    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
   // 🎯 Handle only what you need
