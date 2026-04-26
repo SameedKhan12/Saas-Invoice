@@ -90,8 +90,7 @@ if (loading || !invoice) {
     );
   }
 
-  // 2. Once we are here, TypeScript and React know 'invoice' is defined.
-  // No more "Cannot read properties of undefined" errors!
+
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="border p-8 rounded-2xl shadow w-[400px] space-y-4">
