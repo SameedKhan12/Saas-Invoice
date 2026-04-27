@@ -16,7 +16,7 @@ import {
 import { Invoice } from "@/db/schema";
 import { formatCurrency } from "@/lib/utils/amountConverter";
 import { getBadgeColor } from "@/lib/utils/utilityFunctions";
-import { ArrowUpDown, MoreHorizontal, Send, CheckCheck, Download } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Send, CheckCheck, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const columns: ColumnDef<Invoice>[] = [
@@ -144,14 +144,14 @@ export const columns: ColumnDef<Invoice>[] = [
       const invoice = row.original;
 
       return (
-        <DropdownMenu>
+        <DropdownMenu >
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent  align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(invoice.id)}
@@ -195,6 +195,27 @@ export const columns: ColumnDef<Invoice>[] = [
             >
               <Send className="mr-2 h-4 w-4" />
               Send Email
+            </DropdownMenuItem>
+            <DropdownMenuItem
+            className="text-red-600"
+            onClick={ async ()=>{
+              try{
+                const res = await fetch(`/api/invoices/${invoice.id}`,{
+                  method: "DELETE"
+                });
+                if(!res.ok){
+                  const data = await res.json()
+                  throw new Error(data.error)
+                }
+              toast.success("Invoice deleted",{description:"Email has been sent to the client"})
+              }catch(err){
+                toast.error("Unexpected error while sending email")
+              }
+              }}
+              disabled ={invoice.status === "paid"}
+            >
+              <Trash2 className="mr-2 h-4 w-4"/>
+              Delete Invoice
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -118,7 +118,7 @@ export default function InvoicesPage() {
   return (
     <div className="container mx-auto py-10">
       <Toaster/>
-      <div className="flex items-center justify-between mb-6">
+      <div className="container w-xs sm:w-sm md:w-md lg:w-auto max-md:mx-auto  flex max-md:flex-col md:items-center justify-start gap-1 md:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Invoices</h1>
           <p className="text-muted-foreground">
@@ -130,7 +130,10 @@ export default function InvoicesPage() {
           New Invoice
         </Button>
       </div>
+      <div className="mx-auto w-xs sm:w-sm md:w-md lg:w-auto ">
+
       <DataTable columns={columns} data={invoices} />
+      </div>
     </div>
   );
 }

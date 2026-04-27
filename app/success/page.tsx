@@ -3,15 +3,23 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, ArrowRight, FileText, LayoutDashboard } from "lucide-react";
+import {
+  CheckCircle,
+  ArrowRight,
+  FileText,
+  LayoutDashboard,
+  CheckCircle2,
+  Mail,
+  Download,
+} from "lucide-react";
 
 export default function PaymentSuccessPage() {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [visible, setVisible] = useState(false);
   const [ringVisible, setRingVisible] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
 
-  const sessionId = searchParams.get("session_id");
+  // const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
     // Staggered entrance animations
@@ -26,321 +34,378 @@ export default function PaymentSuccessPage() {
   }, []);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+    // <>
+    //   <style>{`
+    //     @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
 
-        .success-page {
-          min-height: 100vh;
-          background: #fafaf8;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: 'DM Sans', sans-serif;
-          padding: 2rem;
-          position: relative;
-          overflow: hidden;
-        }
+    //     .success-page {
+    //       min-height: 100vh;
+    //       background: #fafaf8;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       font-family: 'DM Sans', sans-serif;
+    //       padding: 2rem;
+    //       position: relative;
+    //       overflow: hidden;
+    //     }
 
-        /* Subtle background pattern */
-        .success-page::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background-image: radial-gradient(circle at 1px 1px, #e8e6e0 1px, transparent 0);
-          background-size: 32px 32px;
-          opacity: 0.5;
-        }
+    //     /* Subtle background pattern */
+    //     .success-page::before {
+    //       content: '';
+    //       position: absolute;
+    //       inset: 0;
+    //       background-image: radial-gradient(circle at 1px 1px, #e8e6e0 1px, transparent 0);
+    //       background-size: 32px 32px;
+    //       opacity: 0.5;
+    //     }
 
-        /* Large decorative circle top-right */
-        .success-page::after {
-          content: '';
-          position: absolute;
-          top: -200px;
-          right: -200px;
-          width: 500px;
-          height: 500px;
-          border-radius: 50%;
-          background: radial-gradient(circle, #d4f5e2 0%, transparent 70%);
-          pointer-events: none;
-        }
+    //     /* Large decorative circle top-right */
+    //     .success-page::after {
+    //       content: '';
+    //       position: absolute;
+    //       top: -200px;
+    //       right: -200px;
+    //       width: 500px;
+    //       height: 500px;
+    //       border-radius: 50%;
+    //       background: radial-gradient(circle, #d4f5e2 0%, transparent 70%);
+    //       pointer-events: none;
+    //     }
 
-        .card {
-          position: relative;
-          z-index: 1;
-          background: #ffffff;
-          border: 1px solid #e8e6e0;
-          border-radius: 20px;
-          padding: 3rem 3.5rem;
-          max-width: 480px;
-          width: 100%;
-          box-shadow:
-            0 1px 2px rgba(0,0,0,0.04),
-            0 8px 32px rgba(0,0,0,0.06),
-            0 32px 64px rgba(0,0,0,0.04);
-          text-align: center;
-        }
+    //     .card {
+    //       position: relative;
+    //       z-index: 1;
+    //       background: #ffffff;
+    //       border: 1px solid #e8e6e0;
+    //       border-radius: 20px;
+    //       padding: 3rem 3.5rem;
+    //       max-width: 480px;
+    //       width: 100%;
+    //       box-shadow:
+    //         0 1px 2px rgba(0,0,0,0.04),
+    //         0 8px 32px rgba(0,0,0,0.06),
+    //         0 32px 64px rgba(0,0,0,0.04);
+    //       text-align: center;
+    //     }
 
-        /* Icon ring */
-        .icon-wrap {
-          width: 88px;
-          height: 88px;
-          margin: 0 auto 2rem;
-          position: relative;
-          transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .icon-wrap.hidden {
-          opacity: 0;
-          transform: scale(0.5);
-        }
-        .icon-wrap.visible {
-          opacity: 1;
-          transform: scale(1);
-        }
+    //     /* Icon ring */
+    //     .icon-wrap {
+    //       width: 88px;
+    //       height: 88px;
+    //       margin: 0 auto 2rem;
+    //       position: relative;
+    //       transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    //     }
+    //     .icon-wrap.hidden {
+    //       opacity: 0;
+    //       transform: scale(0.5);
+    //     }
+    //     .icon-wrap.visible {
+    //       opacity: 1;
+    //       transform: scale(1);
+    //     }
 
-        .ring {
-          position: absolute;
-          inset: 0;
-          border-radius: 50%;
-          border: 2px solid transparent;
-          transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .ring.hidden {
-          transform: scale(0.6);
-          opacity: 0;
-        }
-        .ring.visible {
-          transform: scale(1);
-          opacity: 1;
-        }
-        .ring-1 {
-          border-color: #86efac;
-          transform-origin: center;
-        }
-        .ring-2 {
-          inset: 8px;
-          border-color: #4ade80;
-          transition-delay: 0.1s;
-        }
+    //     .ring {
+    //       position: absolute;
+    //       inset: 0;
+    //       border-radius: 50%;
+    //       border: 2px solid transparent;
+    //       transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    //     }
+    //     .ring.hidden {
+    //       transform: scale(0.6);
+    //       opacity: 0;
+    //     }
+    //     .ring.visible {
+    //       transform: scale(1);
+    //       opacity: 1;
+    //     }
+    //     .ring-1 {
+    //       border-color: #86efac;
+    //       transform-origin: center;
+    //     }
+    //     .ring-2 {
+    //       inset: 8px;
+    //       border-color: #4ade80;
+    //       transition-delay: 0.1s;
+    //     }
 
-        .icon-inner {
-          position: absolute;
-          inset: 16px;
-          background: linear-gradient(135deg, #22c55e, #16a34a);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35);
-        }
+    //     .icon-inner {
+    //       position: absolute;
+    //       inset: 16px;
+    //       background: linear-gradient(135deg, #22c55e, #16a34a);
+    //       border-radius: 50%;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35);
+    //     }
 
-        /* Check mark draw animation */
-        .check-icon {
-          color: white;
-          width: 28px;
-          height: 28px;
-          stroke-dasharray: 50;
-          stroke-dashoffset: 50;
-          transition: stroke-dashoffset 0.6s ease 0.5s;
-        }
-        .check-icon.visible {
-          stroke-dashoffset: 0;
-        }
+    //     /* Check mark draw animation */
+    //     .check-icon {
+    //       color: white;
+    //       width: 28px;
+    //       height: 28px;
+    //       stroke-dasharray: 50;
+    //       stroke-dashoffset: 50;
+    //       transition: stroke-dashoffset 0.6s ease 0.5s;
+    //     }
+    //     .check-icon.visible {
+    //       stroke-dashoffset: 0;
+    //     }
 
-        /* Text content */
-        .content {
-          transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .content.hidden {
-          opacity: 0;
-          transform: translateY(16px);
-        }
-        .content.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
+    //     /* Text content */
+    //     .content {
+    //       transition: opacity 0.6s ease, transform 0.6s ease;
+    //     }
+    //     .content.hidden {
+    //       opacity: 0;
+    //       transform: translateY(16px);
+    //     }
+    //     .content.visible {
+    //       opacity: 1;
+    //       transform: translateY(0);
+    //     }
 
-        .badge {
-          display: inline-block;
-          background: #f0fdf4;
-          color: #15803d;
-          border: 1px solid #bbf7d0;
-          font-size: 0.7rem;
-          font-weight: 500;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          padding: 4px 12px;
-          border-radius: 100px;
-          margin-bottom: 1.25rem;
-        }
+    //     .badge {
+    //       display: inline-block;
+    //       background: #f0fdf4;
+    //       color: #15803d;
+    //       border: 1px solid #bbf7d0;
+    //       font-size: 0.7rem;
+    //       font-weight: 500;
+    //       letter-spacing: 0.1em;
+    //       text-transform: uppercase;
+    //       padding: 4px 12px;
+    //       border-radius: 100px;
+    //       margin-bottom: 1.25rem;
+    //     }
 
-        h1 {
-          font-family: 'DM Serif Display', Georgia, serif;
-          font-size: 2rem;
-          font-weight: 400;
-          color: #1a1a14;
-          line-height: 1.15;
-          margin: 0 0 0.75rem;
-          letter-spacing: -0.02em;
-        }
+    //     h1 {
+    //       font-family: 'DM Serif Display', Georgia, serif;
+    //       font-size: 2rem;
+    //       font-weight: 400;
+    //       color: #1a1a14;
+    //       line-height: 1.15;
+    //       margin: 0 0 0.75rem;
+    //       letter-spacing: -0.02em;
+    //     }
 
-        h1 em {
-          font-style: italic;
-          color: #16a34a;
-        }
+    //     h1 em {
+    //       font-style: italic;
+    //       color: #16a34a;
+    //     }
 
-        .subtitle {
-          font-size: 0.9375rem;
-          color: #78716c;
-          line-height: 1.6;
-          margin: 0 0 2rem;
-          font-weight: 300;
-        }
+    //     .subtitle {
+    //       font-size: 0.9375rem;
+    //       color: #78716c;
+    //       line-height: 1.6;
+    //       margin: 0 0 2rem;
+    //       font-weight: 300;
+    //     }
 
-        /* Divider */
-        .divider {
-          height: 1px;
-          background: #f0ede8;
-          margin: 0 0 2rem;
-        }
+    //     /* Divider */
+    //     .divider {
+    //       height: 1px;
+    //       background: #f0ede8;
+    //       margin: 0 0 2rem;
+    //     }
 
-        /* Action buttons */
-        .actions {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
+    //     /* Action buttons */
+    //     .actions {
+    //       display: flex;
+    //       flex-direction: column;
+    //       gap: 0.75rem;
+    //     }
 
-        .btn-primary {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          background: #1a1a14;
-          color: #fafaf8;
-          border: none;
-          border-radius: 10px;
-          padding: 0.8125rem 1.5rem;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.9375rem;
-          font-weight: 500;
-          cursor: pointer;
-          text-decoration: none;
-          transition: background 0.2s ease, transform 0.15s ease;
-          letter-spacing: -0.01em;
-        }
-        .btn-primary:hover {
-          background: #2d2d24;
-          transform: translateY(-1px);
-        }
-        .btn-primary:active {
-          transform: translateY(0);
-        }
+    //     .btn-primary {
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       gap: 8px;
+    //       background: #1a1a14;
+    //       color: #fafaf8;
+    //       border: none;
+    //       border-radius: 10px;
+    //       padding: 0.8125rem 1.5rem;
+    //       font-family: 'DM Sans', sans-serif;
+    //       font-size: 0.9375rem;
+    //       font-weight: 500;
+    //       cursor: pointer;
+    //       text-decoration: none;
+    //       transition: background 0.2s ease, transform 0.15s ease;
+    //       letter-spacing: -0.01em;
+    //     }
+    //     .btn-primary:hover {
+    //       background: #2d2d24;
+    //       transform: translateY(-1px);
+    //     }
+    //     .btn-primary:active {
+    //       transform: translateY(0);
+    //     }
 
-        .btn-secondary {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          background: transparent;
-          color: #78716c;
-          border: 1px solid #e8e6e0;
-          border-radius: 10px;
-          padding: 0.8125rem 1.5rem;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.9375rem;
-          font-weight: 400;
-          cursor: pointer;
-          text-decoration: none;
-          transition: all 0.2s ease;
-          letter-spacing: -0.01em;
-        }
-        .btn-secondary:hover {
-          background: #f5f4f0;
-          border-color: #d4d0c8;
-          color: #44403c;
-        }
+    //     .btn-secondary {
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       gap: 8px;
+    //       background: transparent;
+    //       color: #78716c;
+    //       border: 1px solid #e8e6e0;
+    //       border-radius: 10px;
+    //       padding: 0.8125rem 1.5rem;
+    //       font-family: 'DM Sans', sans-serif;
+    //       font-size: 0.9375rem;
+    //       font-weight: 400;
+    //       cursor: pointer;
+    //       text-decoration: none;
+    //       transition: all 0.2s ease;
+    //       letter-spacing: -0.01em;
+    //     }
+    //     .btn-secondary:hover {
+    //       background: #f5f4f0;
+    //       border-color: #d4d0c8;
+    //       color: #44403c;
+    //     }
 
-        .arrow-icon {
-          transition: transform 0.2s ease;
-        }
-        .btn-primary:hover .arrow-icon {
-          transform: translateX(3px);
-        }
+    //     .arrow-icon {
+    //       transition: transform 0.2s ease;
+    //     }
+    //     .btn-primary:hover .arrow-icon {
+    //       transform: translateX(3px);
+    //     }
 
-        /* Session ID */
-        .session-ref {
-          margin-top: 1.5rem;
-          font-size: 0.75rem;
-          color: #c4bfb8;
-          font-family: 'DM Mono', monospace, monospace;
-          letter-spacing: 0.02em;
-        }
+    //     /* Session ID */
+    //     .session-ref {
+    //       margin-top: 1.5rem;
+    //       font-size: 0.75rem;
+    //       color: #c4bfb8;
+    //       font-family: 'DM Mono', monospace, monospace;
+    //       letter-spacing: 0.02em;
+    //     }
 
-        @media (max-width: 520px) {
-          .card {
-            padding: 2rem 1.5rem;
-          }
-          h1 {
-            font-size: 1.65rem;
-          }
-        }
-      `}</style>
+    //     @media (max-width: 520px) {
+    //       .card {
+    //         padding: 2rem 1.5rem;
+    //       }
+    //       h1 {
+    //         font-size: 1.65rem;
+    //       }
+    //     }
+    //   `}</style>
 
-      <div className="success-page">
-        <div className="card">
-          {/* Animated icon */}
-          <div className={`icon-wrap ${ringVisible ? "visible" : "hidden"}`}>
-            <div className={`ring ring-1 ${ringVisible ? "visible" : "hidden"}`} />
-            <div className={`ring ring-2 ${ringVisible ? "visible" : "hidden"}`} />
-            <div className="icon-inner">
-              <svg
-                className={`check-icon ${visible ? "visible" : ""}`}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            </div>
+    //   <div className="success-page">
+    //     <div className="card">
+    //       {/* Animated icon */}
+    //       <div className={`icon-wrap ${ringVisible ? "visible" : "hidden"}`}>
+    //         <div className={`ring  ${ringVisible ? "visible" : "hidden"}`} />
+    //         <div className={` ring-2 ${ringVisible ? "visible" : "hidden"}`} />
+    //         <div className="icon-inner">
+    //           <svg
+    //             className={`check-icon ${visible ? "visible" : ""}`}
+    //             viewBox="0 0 24 24"
+    //             fill="none"
+    //             stroke="currentColor"
+    //             strokeWidth="2.5"
+    //             strokeLinecap="round"
+    //             strokeLinejoin="round"
+    //           >
+    //             <polyline points="20 6 9 17 4 12" />
+    //           </svg>
+    //         </div>
+    //       </div>
+
+    //       {/* Content */}
+    //       <div className={`content ${contentVisible ? "visible" : "hidden"}`}>
+    //         <div className="badge">Payment confirmed</div>
+
+    //         <h1>
+    //           You&apos;re all <em>paid up</em>
+    //         </h1>
+
+    //         <p className="subtitle">
+    //           Your payment was processed successfully. A receipt has been sent
+    //           to your email address.
+    //         </p>
+
+    //         <div className="divider" />
+
+    //         <div className="actions">
+    //           <Link href="/invoices" className="btn-primary">
+    //             <FileText size={16} />
+    //             View Invoices
+    //             <ArrowRight size={15} className="arrow-icon" />
+    //           </Link>
+    //           <Link href="/" className="btn-secondary">
+    //             <LayoutDashboard size={15} />
+    //             Back to Dashboard
+    //           </Link>
+    //         </div>
+
+    //         {/* {sessionId && (
+    //           <p className="session-ref">ref: {sessionId.slice(0, 24)}…</p>
+    //         )} */}
+    //       </div>
+    //     </div>
+    //   </div>
+    // </>
+
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
+      <div className="bg-card text-card-foreground flex flex-col items-center justify-center gap-6 rounded-xl border w-full max-w-md mx-auto p-8">
+        <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center  justify-center">
+          <CheckCircle2 className="w-8 h-8 text-violet-600" />
+        </div>
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-violet-600">
+            Payment Successful!
+          </h1>
+          <p className="text-muted-foreground">
+            Your payment has been processed successfully. You will receive a
+            confirmation email shortly.
+          </p>
+        </div>
+        <div className="bg-muted/50 rounded-lg p-4 space-y-3 w-full">
+          <div className="flex justify-between items-center wf">
+            <span className="text-muted-foreground">Amount</span>
+            <span className="text-lg">$138</span>
           </div>
-
-          {/* Content */}
-          <div className={`content ${contentVisible ? "visible" : "hidden"}`}>
-            <div className="badge">Payment confirmed</div>
-
-            <h1>
-              You&apos;re all <em>paid up</em>
-            </h1>
-
-            <p className="subtitle">
-              Your payment was processed successfully. A receipt has been sent
-              to your email address.
-            </p>
-
-            <div className="divider" />
-
-            <div className="actions">
-              <Link href="/invoices" className="btn-primary">
-                <FileText size={16} />
-                View Invoices
-                <ArrowRight size={15} className="arrow-icon" />
-              </Link>
-              <Link href="/" className="btn-secondary">
-                <LayoutDashboard size={15} />
-                Back to Dashboard
-              </Link>
-            </div>
-
-            {sessionId && (
-              <p className="session-ref">ref: {sessionId.slice(0, 24)}…</p>
-            )}
+          <div className="bg-border shrink-0 w-full h-px"></div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Transaction ID</span>
+            <span
+              data-slot="badge"
+              className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-foreground [a&amp;]:hover:bg-accent [a&amp;]:hover:text-accent-foreground text-xs"
+            >
+              TXN-789123456
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Payment Method</span>
+            <span>**** 4242</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Payment Method</span>
+            <span>**** 4242</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Payment Method</span>
+            <span>**** 4242</span>
           </div>
         </div>
+        <div className="flex items-center justify-center gap-2 w-full text-sm text-muted-foreground bg-blue-50 p-3 rounded-lg">
+          <Mail className="w-4 h-4" />
+
+          <span>Receipt sent to customer@example.com</span>
+        </div>
+        <button
+          data-slot="button"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-10 rounded-md px-6 has-[&gt;svg]:px-4 w-full"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Download Receipt
+        </button>
       </div>
-    </>
+    </div>
   );
 }

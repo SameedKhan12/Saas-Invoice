@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import db from "@/db";
-import { invoices, clients, users } from "@/db/schema";
+import { invoices, clients, users, InvoiceItem } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { generateReceiptPDF } from "@/lib/receipt-pdf";
 import { sendReceiptEmail } from "@/lib/receipt-email";
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Unknown error";
@@ -72,19 +72,18 @@ export async function POST(req: Request) {
       // 3. Build receipt data
       const receiptData = {
         platformName: process.env.PLATFORM_NAME ?? "Invoice SaaS",
-        platformEmail:
-          process.env.PLATFORM_EMAIL ?? "support@invoicesaas.com",
+        platformEmail: process.env.PLATFORM_EMAIL ?? "eedsam0@gmail.com",
         stripeSessionId: session.id,
         stripePaymentIntentId:
           typeof session.payment_intent === "string"
             ? session.payment_intent
-            : session.payment_intent?.id ?? "N/A",
+            : (session.payment_intent?.id ?? "N/A"),
         paidAt: new Date(),
         invoiceId: invoice.id,
         // Use first 8 chars of UUID as a short invoice number
         invoiceNumber: invoice.id.slice(0, 8).toUpperCase(),
         description: invoice.description,
-        items: (invoice.items as any[]) ?? [],
+        items: (invoice.items as InvoiceItem[]) ?? [],
         amountCents: invoice.amount_cents,
         clientName: client.name,
         clientEmail: client.email,
@@ -92,9 +91,14 @@ export async function POST(req: Request) {
 
       // 4. Generate receipt PDF
       const pdfBuffer = await generateReceiptPDF(receiptData);
+      console.log("PDF generated, size:", pdfBuffer.length);
+
+      console.log("Attempting email to:", client.email);
+      console.log("Resend API key set:", !!process.env.RESEND_API_KEY);
 
       // 5. Send receipt email with PDF attached
       const { success, error } = await sendReceiptEmail(receiptData, pdfBuffer);
+      console.log("Email result:", { success, error: JSON.stringify(error) });
 
       if (!success) {
         // Log but don't fail the webhook — invoice is already marked paid

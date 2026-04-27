@@ -178,7 +178,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="flex flex-col md:flex-row max-md:gap-3 items-center justify-between space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -203,17 +203,19 @@ export function DataTable<TData, TValue>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col md:flex-row max-md:gap-2 items-center space-x-2">
           <div className="flex w-25 items-center justify-center text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>
+          <div className="flex items-center gap-3 justify-center">
+
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-          >
+            >
             Previous
           </Button>
           <Button
@@ -221,9 +223,10 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-          >
+            >
             Next
           </Button>
+            </div>
         </div>
       </div>
     </div>

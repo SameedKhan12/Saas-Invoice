@@ -212,7 +212,7 @@ export async function sendReceiptEmail(
   try {
     await resend.emails.send({
       from: `${data.platformName} <onboarding@resend.dev>`,
-      to: data.clientEmail,
+      to: "eedsam0@gmail.com",
       subject: `Payment Receipt — ${formatCurrency(data.amountCents)} · Invoice #${data.invoiceNumber}`,
       html: buildReceiptEmailHtml(data),
       text: `
@@ -243,8 +243,12 @@ ${data.platformName}
     });
 
     return { success: true };
-  } catch (error) {
-    console.error("Failed to send receipt email:", error);
-    return { success: false, error };
+  }  catch (error) {
+  console.error("Resend error full:", JSON.stringify(error, null, 2));
+  // Also log the message if it's an Error instance
+  if (error instanceof Error) {
+    console.error("Resend error message:", error.message);
   }
+  return { success: false, error };
+}
 }
