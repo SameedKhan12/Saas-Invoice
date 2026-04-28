@@ -354,10 +354,10 @@ export default function PaymentSuccessPage() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
       <div className="bg-card text-card-foreground flex flex-col items-center justify-center gap-6 rounded-xl border w-full max-w-md mx-auto p-8">
         <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center  justify-center">
-          <CheckCircle2 className="w-8 h-8 text-violet-600" />
+          <CheckCircle2 className="w-8 h-8 " />
         </div>
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold text-violet-600">
+          <h1 className="text-2xl font-bold ">
             Payment Successful!
           </h1>
           <p className="text-muted-foreground">
@@ -368,7 +368,7 @@ export default function PaymentSuccessPage() {
         <div className="bg-muted/50 rounded-lg p-4 space-y-3 w-full">
           <div className="flex justify-between items-center wf">
             <span className="text-muted-foreground">Amount</span>
-            <span className="text-lg">$138</span>
+            <span className="text-lg">$20</span>
           </div>
           <div className="bg-border shrink-0 w-full h-px"></div>
           <div className="flex justify-between items-center">
@@ -380,7 +380,7 @@ export default function PaymentSuccessPage() {
               TXN-789123456
             </span>
           </div>
-          <div className="flex justify-between items-center">
+          {/* <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Payment Method</span>
             <span>**** 4242</span>
           </div>
@@ -391,7 +391,7 @@ export default function PaymentSuccessPage() {
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Payment Method</span>
             <span>**** 4242</span>
-          </div>
+          </div> */}
         </div>
         <div className="flex items-center justify-center gap-2 w-full text-sm text-muted-foreground bg-blue-50 p-3 rounded-lg">
           <Mail className="w-4 h-4" />

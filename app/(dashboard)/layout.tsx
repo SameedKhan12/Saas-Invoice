@@ -36,7 +36,9 @@ export default async function DashboardLayout({
           <SidebarTrigger />
           <h1 className="font-semibold">Dashboard</h1>
         </div>
-        {!userData.stripeAccountId && <StripeConnectBanner />}
+        {!userData.stripeAccountId && 
+        <StripeConnectBanner />
+        }
         <SessionProvider>
 
 

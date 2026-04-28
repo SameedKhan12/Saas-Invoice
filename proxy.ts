@@ -13,12 +13,13 @@ export const proxy = auth((req) => {
   // 1. Check if the request is for the Stripe Webhook
   const isStripeWebhook = nextUrl.pathname === "/api/stripe/webhook";
   const isPayPage = /^\/pay\/[^\/]+$/.test(pathname);
+
   const isAuthPage =
     nextUrl.pathname.startsWith("/login") ||
     nextUrl.pathname.startsWith("/signup");
 
   // 2. If it's the webhook, do nothing (let it pass through)
-  if (isStripeWebhook || isPayPage) {
+  if (isStripeWebhook || isPayPage ) {
     return NextResponse.next()
   }
 
