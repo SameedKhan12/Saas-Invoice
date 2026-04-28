@@ -16,7 +16,7 @@ export default async function DashboardLayout({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (Date.now() > new Date(session.expires).getTime()) redirect("/login");
+  // if (Date.now() > new Date(session.expires).getTime()) redirect("/login");
 
   const userID = session.user.id;
 
