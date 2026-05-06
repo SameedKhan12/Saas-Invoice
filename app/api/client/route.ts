@@ -1,8 +1,8 @@
 import db from "@/db";
 import { clients } from "@/db/schema";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
+import { getCachedClients } from "@/lib/cache/clients";
 // Get all clients
 export const GET = auth(async function GET(req) {
   if (!req.auth) {
@@ -14,10 +14,7 @@ export const GET = auth(async function GET(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const allClients = await db
-      .select()
-      .from(clients)
-      .where(eq(clients.userId, id));
+    const allClients = await getCachedClients(id)
     return NextResponse.json(allClients);
   } catch (error) {
     console.error("Error fetching clients:", error);

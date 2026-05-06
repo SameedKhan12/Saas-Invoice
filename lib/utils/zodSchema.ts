@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const signInSchema = z.object({
+  email: z.email("Invalid email")
+    .min(1, "Email is required"),
+  password: z.string("Password is required")
+    .min(1, "Password is required")
+    .min(8, "Password must be more than 8 characters")
+    .max(32, "Password must be less than 32 characters"),
+})
+
 export const clientSchema = z.object({
   name: z.string().trim().min(3, "Name is required").max(255, "Name must be 255 characters or fewer"),
   email: z.string().email("Invalid email address"),

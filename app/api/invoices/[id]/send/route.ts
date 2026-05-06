@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { generateInvoicePDF } from "@/lib/pdf";
 import { sendInvoiceEmail } from "@/lib/email";
+import { stripe } from "@/lib/stripe";
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -48,10 +49,17 @@ export async function POST(
     .from(clients)
     .where(eq(clients.id, invoice[0].clientId));
     
+const account=await stripe.account.retrieve(user[0].stripeAccountId)
+if(!account.details_submitted){
+   throw new Error("Stripe detailes not submitted")
+}
+
     const pdfBytes = await generateInvoicePDF(
       invoice[0],
       client[0]?.name || "Unknown"
     );
+
+
     
   const {success}=await sendInvoiceEmail({
   to: client[0].email,

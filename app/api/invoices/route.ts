@@ -1,8 +1,9 @@
 import db from "@/db";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
-import { clients, InvoiceItem, invoices } from "@/db/schema";
+import {  InvoiceItem, invoices } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { getCachedInvoices } from "@/lib/cache/invoices";
+import { invalidateInvoices } from "@/lib/cache/invalidate";
 
 export async function GET() {
   try {
@@ -14,18 +15,7 @@ export async function GET() {
     if(!id){
       return NextResponse.json({message:'Unauthorized'},{status:401})
     }
-    const data = await db
-      .select({
-        id: invoices.id,
-        clientId: clients.name,
-        description: invoices.description,
-        amount_cents: invoices.amount_cents,
-        dueDate: invoices.dueDate,
-        status: invoices.status,
-      })
-      .from(invoices)
-      .leftJoin(clients, eq(invoices.clientId, clients.id))
-      .where(eq(invoices.userId, id));
+    const data = await getCachedInvoices(id);
     return NextResponse.json(
       { success: true, invoices: data },
       { status: 200 },
@@ -73,6 +63,7 @@ export async function POST(req: Request) {
         status: body.status || "draft",
       })
       .returning();
+      invalidateInvoices(userId);
 
     return NextResponse.json(
       { success: true, invoice: newInvoice[0] },

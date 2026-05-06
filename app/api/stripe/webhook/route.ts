@@ -6,6 +6,7 @@ import { invoices, clients, users, InvoiceItem } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { generateReceiptPDF } from "@/lib/receipt-pdf";
 import { sendReceiptEmail } from "@/lib/receipt-email";
+import { invalidateInvoices } from "@/lib/cache/invalidate";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -52,23 +53,24 @@ export async function POST(req: Request) {
         .where(eq(invoices.id, invoiceId));
 
       console.log(`Invoice ${invoiceId} marked as paid`);
-
+      
       // 2. Fetch invoice + client + user for the receipt
       const [row] = await db
-        .select()
-        .from(invoices)
-        .leftJoin(clients, eq(clients.id, invoices.clientId))
-        .leftJoin(users, eq(users.id, invoices.userId))
-        .where(eq(invoices.id, invoiceId));
-
+      .select()
+      .from(invoices)
+      .leftJoin(clients, eq(clients.id, invoices.clientId))
+      .leftJoin(users, eq(users.id, invoices.userId))
+      .where(eq(invoices.id, invoiceId));
+      
       if (!row?.invoices || !row?.clients) {
         console.error("Could not find invoice/client for receipt");
         return NextResponse.json({ received: true });
       }
-
+      
       const invoice = row.invoices;
       const client = row.clients;
-
+      invalidateInvoices(invoice.userId);
+      
       // 3. Build receipt data
       const receiptData = {
         platformName: process.env.PLATFORM_NAME ?? "Invoice SaaS",

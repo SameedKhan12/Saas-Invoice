@@ -68,6 +68,7 @@ export default function CLientsPage() {
     } catch (error) {
       console.error("Error fetching clients:", error);
       setFetching(false);
+    } finally{
     }
   }
 

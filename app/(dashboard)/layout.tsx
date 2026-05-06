@@ -8,6 +8,10 @@ import { users } from "@/db/schema";
 import db from "@/db";
 import { eq } from "drizzle-orm";
 import { StripeConnectBanner } from "@/components/stripe-connect-banner";
+import StripeBanner from "@/components/stripe-banner";
+import UserProvider from "@/components/components/user-provider";
+import { Suspense } from "react";
+import Loading from "@/components/loading";
 
 export default async function DashboardLayout({
   children,
@@ -28,23 +32,21 @@ export default async function DashboardLayout({
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
+    <UserProvider>
+      <SidebarProvider>
+        <AppSidebar />
 
-      <main className="flex-1">
-        <div className="p-4 border-b flex items-center gap-2">
-          <SidebarTrigger />
-          <h1 className="font-semibold">Dashboard</h1>
-        </div>
-        {!userData.stripeAccountId && 
-        <StripeConnectBanner />
-        }
-        <SessionProvider>
-
-
-        <div className="p-6">{children}</div>
-        </SessionProvider>
-      </main>
-    </SidebarProvider>
+        <main className="flex-1">
+          <div className="p-4 border-b flex items-center gap-2">
+            <SidebarTrigger />
+            <h1 className="font-semibold">Dashboard</h1>
+          </div>
+          <StripeBanner />
+          <SessionProvider>
+              <div className="p-6">{children}</div>
+          </SessionProvider>
+        </main>
+      </SidebarProvider>
+    </UserProvider>
   );
 }

@@ -1,6 +1,7 @@
 import db from "@/db";
 import { invoices, users } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { invalidateInvoices } from "@/lib/cache/invalidate";
 import { and, eq, not } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -23,6 +24,8 @@ export const PATCH = auth(async function PATCH(
       .set({ status: "paid" })
       .where(and(eq(invoices.id, id), eq(invoices.userId, userId)))
       .returning();
+
+      invalidateInvoices(userId);
 
     return NextResponse.json(updated, { status: 200 });
   } catch (error) {

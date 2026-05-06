@@ -4,7 +4,6 @@ import { useState, type MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -29,6 +28,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 text-black">
       <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow flex flex-col items-center justify-between ">
         <h1 className="text-2xl font-semibold mb-4">Welcome back</h1>
+        {/* Email Method HTML START */}
         {/* <div className="mt-10 sm:mx-auto sm:w-full ">
           <form action="#" method="POST" className="space-y-6">
             <div>
@@ -92,6 +92,7 @@ export default function LoginPage() {
           <span className="flex w-full">Or continue with</span>
           <span className="w-full border border-solid border-gray-400 h-px"></span>
         </div> */}
+        {/* EMAIL METHOD  */}
         <Button
           className="w-full "
           variant={"outline"}
