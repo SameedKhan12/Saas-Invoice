@@ -188,6 +188,7 @@ export default function CLientsPage() {
               <FieldGroup>
                 <Field data-invalid={!!errors.name}>
                   <FieldLabel>Name</FieldLabel>
+                  <FieldDescription>Emails can only be sent to my email address: eedsam0@gmail.com</FieldDescription>
                   <Input
                     type="text"
                     placeholder="John Doe"

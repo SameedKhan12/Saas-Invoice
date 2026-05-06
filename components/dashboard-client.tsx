@@ -14,7 +14,7 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from "@/components/ui/chart";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Users, FileText, DollarSign, AlertCircle, Clock } from "lucide-react";
 import {
   Bar,
@@ -25,7 +25,6 @@ import {
   PieChart,
   Label,
 } from "recharts";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserStore } from "@/lib/store/user-store";
 
@@ -75,7 +74,7 @@ export default function Dashboard({ data }: { data: DashboardStats }) {
    const searchParams = useSearchParams();
    const router = useRouter();
    const { fetch: fetchUser } = useUserStore();
-  const [stats, setStats] = useState<DashboardStats | null>(data);
+   const stats = data
 //   const [loading, setLoading] = useState(true);
 
 //   const fetchStats = async () => {

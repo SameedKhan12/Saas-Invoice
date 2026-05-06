@@ -5,21 +5,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Invoice } from "@/db/schema";
+
 import { formatCurrency } from "@/lib/utils/amountConverter";
 import { getBadgeColor } from "@/lib/utils/utilityFunctions";
-import { ArrowUpDown, MoreHorizontal, Send, CheckCheck, Download, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowUpDown } from "lucide-react";
 import { InvoiceWithClient } from "@/lib/cache/invoices";
-import { useUserStore } from "@/lib/store/user-store";
 import InvoiceActions from "./invoice-actions";
 
 export const columns: ColumnDef<InvoiceWithClient>[] = [
