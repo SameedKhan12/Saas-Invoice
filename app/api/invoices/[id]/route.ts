@@ -59,8 +59,10 @@ export const DELETE = auth(async function DELETE(
   req,
   { params }: { params: RouteParams },
 ) {
-  const userId = await req.auth?.user?.id;
-  const invoiceId = await (await params).id;
+  try{
+    
+    const userId = await req.auth?.user?.id;
+    const invoiceId = await (await params).id;
   if (!userId || !invoiceId) {
     return new NextResponse("Unauthorized", { status: 404 });
   }
@@ -68,16 +70,22 @@ export const DELETE = auth(async function DELETE(
     .select()
     .from(invoices)
     .where(eq(invoices.id, invoiceId));
-  if (invoice.userId !== userId)
-    return new NextResponse("This invoice doesnot belongs to you", {
-      status: 404,
+    if (invoice.userId !== userId)
+      return new NextResponse("This invoice doesnot belongs to you", {
+    status: 404,
     });
-
-  await db
+    
+    
+    await db
     .delete(invoices)
     .where(and(
       eq(invoices.id, invoiceId), 
       eq(invoices.userId,userId),
       eq(invoices.status, "draft")
-  ));
+    ));
+    invalidateInvoices(userId);
+    return NextResponse.json({ok:true},{status:200})
+  } catch(err){
+    console.log(err)
+  }
 });

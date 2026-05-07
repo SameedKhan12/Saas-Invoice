@@ -3,6 +3,8 @@ import { clients } from "@/db/schema";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getCachedClients } from "@/lib/cache/clients";
+import { invalidateClients } from "@/lib/cache/invalidate";
+import { eq } from "drizzle-orm";
 // Get all clients
 export const GET = auth(async function GET(req) {
   if (!req.auth) {
@@ -14,7 +16,10 @@ export const GET = auth(async function GET(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const allClients = await getCachedClients(id)
+    const allClients = await  db
+        .select()
+        .from(clients)
+        .where(eq(clients.userId, id));
     return NextResponse.json(allClients);
   } catch (error) {
     console.error("Error fetching clients:", error);
@@ -27,6 +32,7 @@ export const GET = auth(async function GET(req) {
 
 // Create a new client
 export const POST = auth(async function POST(req) {
+  
   if (!req.auth) {
     return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
   }
@@ -45,6 +51,7 @@ export const POST = auth(async function POST(req) {
         email: body.email,
       })
       .returning();
+      invalidateClients(userId)
     return NextResponse.json(newClient[0], { status: 201 });
   } catch (error) {
     console.error("Error creating client:", error);

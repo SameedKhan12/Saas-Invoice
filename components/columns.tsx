@@ -134,7 +134,10 @@ export const columns: ColumnDef<InvoiceWithClient>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
- <InvoiceActions invoice={row.original} />
+      return(
+
+        <InvoiceActions invoice={row.original} />
+      )
     },
   },
 ];

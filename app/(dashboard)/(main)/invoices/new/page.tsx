@@ -25,6 +25,7 @@ import { Trash, Plus } from "lucide-react";
 import InvoicePreview, { InvoicePreviewData } from "@/components/invoice-preview";
 import { InvoiceItem } from "@/db/schema";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface Client {
   id: string;
@@ -43,6 +44,7 @@ export default function NewInvoicePage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const router = useRouter()
 
   // Form state
   const [selectedClientId, setSelectedClientId] = useState("");
@@ -141,7 +143,8 @@ export default function NewInvoicePage() {
       });
       if (res.ok) {
         setSuccess(true);
-        toast.success("Invoice creatred")
+        toast.success("Invoice creatred");
+        router.refresh();
       } else {
         const data = await res.json();
         setErrors({ submit: data.error || "Failed to create invoice" });

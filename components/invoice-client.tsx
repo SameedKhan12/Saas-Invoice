@@ -13,7 +13,7 @@ import { InvoiceWithClient } from "@/lib/cache/invoices";
 
 export default function InvoicesClient({data}:{ data: InvoiceWithClient[]}) {
   const router = useRouter();
-
+  
 
 
   return (

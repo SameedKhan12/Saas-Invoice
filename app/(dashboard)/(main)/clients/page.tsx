@@ -125,7 +125,7 @@ export default function CLientsPage() {
       }
     }
     setForm({ name: "", email: "" });
-    fetchClients();
+    // fetchClients();
   }
 
   useEffect(() => {

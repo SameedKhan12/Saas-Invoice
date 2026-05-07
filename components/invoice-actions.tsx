@@ -4,9 +4,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "./ui/button";
 import { CheckCheck, Download, MoreHorizontal, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function InvoiceActions({ invoice }: { invoice: InvoiceWithClient }) {
   const { stripeConnected } = useUserStore(); // ✅ valid — inside a component
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -75,10 +77,18 @@ export default function InvoiceActions({ invoice }: { invoice: InvoiceWithClient
                 const data = await res.json();
                 throw new Error(data.error);
               }
+              router.refresh();
+              
+              
+              
+              
+              
               toast.success("Invoice deleted");
             } catch (err) {
               console.log(err);
               toast.error("Unexpected error while deleting invoice");
+            } finally{
+              window.location.href = "/invoices";
             }
           }}
           disabled={invoice.status !== "draft"}
