@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-
+import { useSidebar } from "@/components/ui/sidebar";
 import {
   Sidebar,
   SidebarContent,
@@ -24,39 +24,30 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Item,
-  ItemContent,
-  ItemTitle,
-  ItemDescription,
-  ItemMedia,
-  ItemActions,
-} from "@/components/ui/item";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   LayoutDashboard,
   Users,
   FileText,
-  MoreHorizontal,
   User,
   CreditCard,
   Bell,
   LogOut,
-  Settings,
+  ChevronsUpDown,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/invoices", label: "Invoices", icon: FileText },
-  { href: "/settings", label: "Settings", icon: Settings },
+  // { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
-
+  const { state ,isMobile } = useSidebar();
   const userName = session?.user?.name ?? "User";
   const userEmail = session?.user?.email ?? "";
   const userImage = session?.user?.image ?? "";
@@ -71,7 +62,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <h2 className="text-lg font-semibold px-2">Invoice SaaS</h2>
+        <h2 data-collapsed={state==="collapsed"} className="text-lg font-semibold px-2 data-[collapsed=true]:hidden transition-all ease-in-out">Invoice SaaS</h2>
       </SidebarHeader>
 
       <SidebarContent>
@@ -95,15 +86,17 @@ export function AppSidebar() {
 
       {/* Footer — user item + dropdown */}
       <SidebarFooter className="p-2">
-        <DropdownMenu>
-          <Item className="rounded-md px-1 items-center">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              {/* <Item data-state={state} className="rounded-md data-[state=expanded]:px-1 data-[state=expanded]:items-center">
             <ItemMedia>
               <Avatar className="h-8 w-8">
                 <AvatarImage src={userImage!== ""? userImage : undefined} alt={userName} />
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
             </ItemMedia>
-            <ItemContent className="max-w-3/5">
+            <ItemContent data-state={state} className="max-w-3/5 data-[state=collapsed]:hidden transition-all ease-in">
               <ItemTitle className="text-sm font-medium leading-none">
                 {userName}
               </ItemTitle>
@@ -111,7 +104,7 @@ export function AppSidebar() {
                 {userEmail}
               </ItemDescription>
             </ItemContent>
-            <ItemActions>
+            <ItemActions data-state={state} className="data-[state=collapsed]:hidden">
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
@@ -123,54 +116,90 @@ export function AppSidebar() {
                 </Button>
               </DropdownMenuTrigger>
             </ItemActions>
-          </Item>
+          </Item> */}
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage
+                      src={userImage !== "" ? userImage : undefined}
+                      alt={userName}
+                    />
+                    <AvatarFallback className="text-xs">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{userName}</span>
+                    <span className="truncate text-xs">{userEmail}</span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={userImage !== "" ? userImage : undefined}
+                        alt={userName}
+                      />
+                      <AvatarFallback className="text-xs">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col min-w-0  overflow-x-hidden">
+                      <span className="text-sm font-medium truncate">
+                        {userName}
+                      </span>
+                      <span className="text-xs text-muted-foreground truncate">
+                        {userEmail}
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
 
-          <DropdownMenuContent side="top" align="end" sideOffset={8} className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={userImage!== ""? userImage : undefined} alt={userName} />
-                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col min-w-0  overflow-x-hidden">
-                  <span className="text-sm font-medium truncate">{userName}</span>
-                  <span className="text-xs text-muted-foreground truncate">{userEmail}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
+                <DropdownMenuSeparator />
 
-            <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings">
+                      <User className="mr-2 h-4 w-4" />
+                      Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Billing
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
 
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <User className="mr-2 h-4 w-4" />
-                  Account
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Billing
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell className="mr-2 h-4 w-4" />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+                <DropdownMenuSeparator />
 
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              className="text-red-600 focus:text-red-600 focus:bg-red-50"
-              onClick={() => signOut({ callbackUrl: "/login" })}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <DropdownMenuItem
+                  className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

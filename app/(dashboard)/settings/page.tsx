@@ -58,7 +58,7 @@ export default function SettingsPage() {
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Settings
+          Account
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
           Manage your account preferences and integrations.

@@ -41,7 +41,7 @@ export default async function DashboardLayout({
             <SidebarTrigger />
             <h1 className="font-semibold">Dashboard</h1>
           </div>
-          <StripeBanner />
+          {/* <StripeBanner /> */}
           <SessionProvider>
               <div className="p-6">{children}</div>
           </SessionProvider>

@@ -188,13 +188,12 @@ export default function CLientsPage() {
               <FieldGroup>
                 <Field data-invalid={!!errors.name}>
                   <FieldLabel>Name</FieldLabel>
-                  <FieldDescription>Emails can only be sent to my email address: eedsam0@gmail.com</FieldDescription>
                   <Input
                     type="text"
                     placeholder="John Doe"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  />
+                    />
                   {errors.name && (
                     <FieldDescription className="text-destructive">
                       {errors.name}
@@ -203,6 +202,7 @@ export default function CLientsPage() {
                 </Field>
                 <Field data-invalid={!!errors.email}>
                   <FieldLabel>Email</FieldLabel>
+                  <FieldDescription>Emails can only be sent to my email address: eedsam0@gmail.com</FieldDescription>
                   <Input
                     type="email"
                     placeholder="john.doe@example.com"

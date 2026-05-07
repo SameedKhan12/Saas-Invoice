@@ -2,6 +2,19 @@ import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { getCachedDashboardData } from "@/lib/cache/dashboard";
 
+export async function dashboardHandler(userId: string, email: string) {
+  if (!userId || !email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  try {
+    const data = await getCachedDashboardData(userId);
+    return NextResponse.json(data, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to fetch dashboard data" }, { status: 500 });
+  }
+}
+
 export const GET = auth(async function GET(req) {
   if (!req.auth) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
