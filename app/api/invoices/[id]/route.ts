@@ -78,6 +78,6 @@ export const DELETE = auth(async function DELETE(
     .where(and(
       eq(invoices.id, invoiceId), 
       eq(invoices.userId,userId),
-      not(eq(invoices.status, "paid"))
+      eq(invoices.status, "draft")
   ));
 });

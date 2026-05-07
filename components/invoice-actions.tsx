@@ -59,7 +59,7 @@ export default function InvoiceActions({ invoice }: { invoice: InvoiceWithClient
               toast.error("Unexpected error while sending email");
             }
           }}
-          disabled={invoice.status === "paid" || !stripeConnected}
+          disabled={invoice.status !== "draft" || !stripeConnected }
         >
           <Send className="mr-2 h-4 w-4" />
           Send Email
@@ -81,7 +81,7 @@ export default function InvoiceActions({ invoice }: { invoice: InvoiceWithClient
               toast.error("Unexpected error while deleting invoice");
             }
           }}
-          disabled={invoice.status === "paid"}
+          disabled={invoice.status !== "draft"}
         >
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Invoice

@@ -159,9 +159,16 @@ export default function CLientsPage() {
   ):[];
 
   return (
+    <div className="space-y-6 p-6">
+    
+        <div>
+        <h1 className="text-3xl font-bold tracking-tight">Clients</h1>
+        <p className="text-muted-foreground">
+          Manage your clients
+        </p>
+      </div>
     <div className="flex w-full gap-12 lg:gap-0.5 justify-between flex-col lg:flex-row px-4">
       <div className="space-y-6 w-full">
-        <h1 className="text-2xl font-semibold">Clients</h1>
         <Field className="max-w-lg">
           <FieldLabel>Search</FieldLabel>
           <InputGroup>
@@ -297,6 +304,7 @@ export default function CLientsPage() {
           )}
         </Table>
       </div>
+    </div>
     </div>
   );
 }
