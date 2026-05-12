@@ -390,6 +390,7 @@ function ReceiptDocument({ data }: { data: ReceiptData }) {
 }
 
 export async function generateReceiptPDF(data: ReceiptData): Promise<Buffer> {
+  console.log(data.platformName)
   const element = (<ReceiptDocument data={data} />  );
   return await renderToBuffer(element);
 }

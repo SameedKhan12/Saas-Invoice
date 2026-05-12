@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { getCachedInvoices } from "@/lib/cache/invoices";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function InvoicesPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");

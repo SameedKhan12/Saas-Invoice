@@ -6,9 +6,9 @@ interface UserState {
   stripeAccountId: string | null;
   stripeConnected: boolean;
   stripeOnboardingComplete: boolean;
-  fetched: boolean;
-  fetching: boolean;
-  fetch: () => Promise<void>;
+    fetched: boolean;
+    fetching: boolean;
+    fetch: () => Promise<void>;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({

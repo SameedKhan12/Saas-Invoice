@@ -333,7 +333,6 @@ export default function NewInvoicePage() {
                 <Field>
                   {index === 0 && <FieldLabel>Qty</FieldLabel>}
                   <Input
-                    type="number"
                     min={1}
                     value={item.quantity}
                     onChange={(e) =>
@@ -344,10 +343,12 @@ export default function NewInvoicePage() {
                 <Field>
                   {index === 0 && <FieldLabel>Price</FieldLabel>}
                   <Input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0.00"
                     min={0}
                     step={0.01}
-                    value={item.unitPrice}
+                    value={item.unitPrice === 0?"":item.unitPrice}
                     onChange={(e) =>
                       updateItem(
                         index,

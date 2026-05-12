@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import { generateInvoicePDF } from "@/lib/pdf";
 import { sendInvoiceEmail } from "@/lib/email";
 import { stripe } from "@/lib/stripe";
+import { invalidateInvoices } from "@/lib/cache/invalidate";
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -77,6 +78,7 @@ if(!account.details_submitted){
     .set({ status: "pending"})
     .where(eq(invoices.id, id))
     .returning();
+    invalidateInvoices(userId)
   }
   return NextResponse.json({ success: true },{status:201});
 } catch(error){

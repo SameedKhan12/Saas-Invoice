@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { generateReceiptPDF } from "@/lib/receipt-pdf";
 import { sendReceiptEmail } from "@/lib/receipt-email";
 import { invalidateInvoices } from "@/lib/cache/invalidate";
+import { auth } from "@/lib/auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
       .leftJoin(users, eq(users.id, invoices.userId))
       .where(eq(invoices.id, invoiceId));
       
-      if (!row?.invoices || !row?.clients) {
+      if (!row?.invoices || !row?.clients || !row.users) {
         console.error("Could not find invoice/client for receipt");
         return NextResponse.json({ received: true });
       }
@@ -70,44 +71,56 @@ export async function POST(req: Request) {
       const invoice = row.invoices;
       const client = row.clients;
       invalidateInvoices(invoice.userId);
+
+const connectedAccountId = event.account; // This is the 'acct_xxx' ID
+
+if (connectedAccountId) {
+  const account = await stripe.accounts.retrieve(connectedAccountId);
+  const merchantName = account.settings?.dashboard?.display_name || account.business_profile?.name;
+  console.log(merchantName)
+  const MerchantEmail = account.business_profile?.support_email
+  
+  // Now use merchantName in your receiptData
+  // 3. Build receipt data
+  const receiptData = {
+    platformName: merchantName ?? "N/A",
+    platformEmail: row.users?.email || "",
+    stripeSessionId: session.id,
+    stripePaymentIntentId:
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : (session.payment_intent?.id ?? "N/A"),
+    paidAt: new Date(),
+    invoiceId: invoice.id,
+    // Use first 8 chars of UUID as a short invoice number
+    invoiceNumber: invoice.id.slice(0, 8).toUpperCase(),
+    description: invoice.description,
+    items: (invoice.items as InvoiceItem[]) ?? [],
+    amountCents: invoice.amount_cents,
+    clientName: client.name,
+    clientEmail: client.email,
+  };
+  
+  // 4. Generate receipt PDF
+  const pdfBuffer = await generateReceiptPDF(receiptData);
+  console.log("PDF generated, size:", pdfBuffer.length);
+  
+  console.log("Attempting email to:", client.email);
+  console.log("Resend API key set:", !!process.env.RESEND_API_KEY);
+  
+  // 5. Send receipt email with PDF attached
+  const { success, error } = await sendReceiptEmail(receiptData, pdfBuffer);
+  console.log("Email result:", { success, error: JSON.stringify(error) });
+  
+  if (!success) {
+    // Log but don't fail the webhook — invoice is already marked paid
+    console.error("Receipt email failed to send:", error);
+  } else {
+    console.log(`Receipt email sent to ${client.email}`);
+  }
+}
+
       
-      // 3. Build receipt data
-      const receiptData = {
-        platformName: process.env.PLATFORM_NAME ?? "Invoice SaaS",
-        platformEmail: process.env.PLATFORM_EMAIL ?? "eedsam0@gmail.com",
-        stripeSessionId: session.id,
-        stripePaymentIntentId:
-          typeof session.payment_intent === "string"
-            ? session.payment_intent
-            : (session.payment_intent?.id ?? "N/A"),
-        paidAt: new Date(),
-        invoiceId: invoice.id,
-        // Use first 8 chars of UUID as a short invoice number
-        invoiceNumber: invoice.id.slice(0, 8).toUpperCase(),
-        description: invoice.description,
-        items: (invoice.items as InvoiceItem[]) ?? [],
-        amountCents: invoice.amount_cents,
-        clientName: client.name,
-        clientEmail: client.email,
-      };
-
-      // 4. Generate receipt PDF
-      const pdfBuffer = await generateReceiptPDF(receiptData);
-      console.log("PDF generated, size:", pdfBuffer.length);
-
-      console.log("Attempting email to:", client.email);
-      console.log("Resend API key set:", !!process.env.RESEND_API_KEY);
-
-      // 5. Send receipt email with PDF attached
-      const { success, error } = await sendReceiptEmail(receiptData, pdfBuffer);
-      console.log("Email result:", { success, error: JSON.stringify(error) });
-
-      if (!success) {
-        // Log but don't fail the webhook — invoice is already marked paid
-        console.error("Receipt email failed to send:", error);
-      } else {
-        console.log(`Receipt email sent to ${client.email}`);
-      }
     } catch (err) {
       console.error("Error processing checkout.session.completed:", err);
       // Return 500 so Stripe retries — but only if marking paid also failed.

@@ -85,7 +85,8 @@ export const DELETE = auth(async function DELETE(
     ));
     invalidateInvoices(userId);
     return NextResponse.json({ok:true},{status:200})
-  } catch(err){
-    console.log(err)
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Failed to delete invoice" }, { status: 500 });
   }
 });

@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 
 export type InvoiceWithClient = {
   id: string;
+  userId: string;
   clientId: string | null; // client name now, not UUID
   description: string | null;
   amount_cents: number;
@@ -18,9 +19,10 @@ export type InvoiceWithClient = {
 export const getCachedInvoices = (userId: string) =>
   unstable_cache(
     async () => {
-      return  db
+      return await db
       .select({
         id: invoices.id,
+        userId:invoices.userId,
         clientId: clients.name,
         description: invoices.description,
         amount_cents: invoices.amount_cents,

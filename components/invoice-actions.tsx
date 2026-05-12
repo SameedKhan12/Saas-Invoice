@@ -49,10 +49,11 @@ export default function InvoiceActions({ invoice }: { invoice: InvoiceWithClient
               const res = await fetch(`/api/invoices/${invoice.id}/send`, {
                 method: "POST",
               });
+              const data = await res.json();
               if (!res.ok) {
-                const data = await res.json();
                 throw new Error(data.error);
               }
+              await router.refresh();
               toast.success("Email sent", {
                 description: "Email has been sent to the client",
               });
@@ -72,23 +73,21 @@ export default function InvoiceActions({ invoice }: { invoice: InvoiceWithClient
             try {
               const res = await fetch(`/api/invoices/${invoice.id}`, {
                 method: "DELETE",
+                cache: "no-store",
               });
               if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error);
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error || "Failed to delete invoice");
               }
-              router.refresh();
               
-              
-              
-              
-              
+               router.refresh();
+
               toast.success("Invoice deleted");
             } catch (err) {
-              console.log(err);
+              console.error(err);
               toast.error("Unexpected error while deleting invoice");
             } finally{
-              window.location.href = "/invoices";
+              router.refresh();
             }
           }}
           disabled={invoice.status !== "draft"}

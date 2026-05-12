@@ -12,6 +12,7 @@ import StripeBanner from "@/components/stripe-banner";
 import UserProvider from "@/components/components/user-provider";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
+import InvoiceProvider from "@/components/components/invoice-provider";
 
 export default async function DashboardLayout({
   children,
@@ -33,20 +34,22 @@ export default async function DashboardLayout({
 
   return (
     <UserProvider>
-      <SidebarProvider>
-        <AppSidebar />
+      <InvoiceProvider>
+        <SidebarProvider>
+          <AppSidebar />
 
-        <main className="flex-1">
-          <div className="p-4 border-b flex items-center gap-2">
-            <SidebarTrigger />
-            <h1 className="font-semibold">Dashboard</h1>
-          </div>
-          {/* <StripeBanner /> */}
-          <SessionProvider>
+          <main className="flex-1">
+            <div className="p-4 border-b flex items-center gap-2">
+              <SidebarTrigger />
+              <h1 className="font-semibold">Dashboard</h1>
+            </div>
+            {/* <StripeBanner /> */}
+            <SessionProvider>
               <div className="p-6">{children}</div>
-          </SessionProvider>
-        </main>
-      </SidebarProvider>
+            </SessionProvider>
+          </main>
+        </SidebarProvider>
+      </InvoiceProvider>
     </UserProvider>
   );
 }
